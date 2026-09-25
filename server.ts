@@ -2498,12 +2498,21 @@ const diskUpload = multer({ dest: uploadDir });
       const snap = await q.get();
       const data = snap.docs.map((doc: any) => {
         const d = doc.data();
+        const rawUsername = d.username || (d.userEmail ? d.userEmail.split('@')[0] : 'User');
+        const maskedUser = rawUsername.length > 3 
+          ? rawUsername.substring(0, 3) + '***'
+          : rawUsername + '***';
         return {
+          id: doc.id,
           dbId: doc.id,
-          product_name: d.product_name,
-          quantity: d.quantity,
-          price: d.price,
-          date: d.date,
+          productName: d.productName || d.product_name || 'สินค้าดิจิทัล',
+          product_name: d.product_name || d.productName || 'สินค้าดิจิทัล',
+          productId: d.productId,
+          username: maskedUser,
+          quantity: d.quantity || 1,
+          price: d.price || 0,
+          date: d.date || new Date().toISOString(),
+          imageUrl: d.imageUrl,
           // Hide secret info
         };
       });

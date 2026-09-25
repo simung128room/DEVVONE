@@ -1,8 +1,8 @@
-import React from 'react';
-import { motion } from 'motion/react';
-import { Package, ArrowLeft, ChevronRight, ShoppingCart, Star, TrendingUp, Sparkles } from 'lucide-react';
-import { Category, Product } from '../types';
-import { CategoryCard } from './CategoryCard';
+import React from "react";
+import { motion } from "motion/react";
+import { ArrowLeft, Sparkles } from "lucide-react";
+import { Category, Product } from "../types";
+import { CategoryCard } from "./CategoryCard";
 
 interface CategoriesViewProps {
   categories: Category[];
@@ -12,20 +12,28 @@ interface CategoriesViewProps {
   onSelectCategory: (categoryId: string) => void;
 }
 
-export const CategoriesView: React.FC<CategoriesViewProps> = ({ 
-  categories = [], 
-  products = [], 
-  siteSettings, 
-  onBack, 
-  onSelectCategory 
+export const CategoriesView: React.FC<CategoriesViewProps> = ({
+  categories = [],
+  products = [],
+  siteSettings,
+  onBack,
+  onSelectCategory,
 }) => {
   const getCategoryPriceInfo = (cat: any) => {
-    const catProducts = cat === 'all' ? products : products.filter(p => p.category === cat.id || p.category === cat.name || p.category === cat.title);
+    const catProducts =
+      cat === "all"
+        ? products
+        : products.filter(
+            (p) =>
+              p.category === cat.id ||
+              p.category === cat.name ||
+              p.category === cat.title,
+          );
     if (catProducts.length === 0) return null;
-    const prices = catProducts.map(p => p.price);
+    const prices = catProducts.map((p) => p.price);
     const minPrice = Math.min(...prices);
     const maxPrice = Math.max(...prices);
-    
+
     if (minPrice === maxPrice) {
       return `฿${minPrice.toLocaleString()}`;
     }
@@ -33,49 +41,57 @@ export const CategoriesView: React.FC<CategoriesViewProps> = ({
   };
 
   const getProductCountText = (cat: any) => {
-    const catProducts = cat === 'all' ? products : products.filter(p => p.category === cat.id || p.category === cat.name || p.category === cat.title);
+    const catProducts =
+      cat === "all"
+        ? products
+        : products.filter(
+            (p) =>
+              p.category === cat.id ||
+              p.category === cat.name ||
+              p.category === cat.title,
+          );
     return `${catProducts.length} สินค้า`;
   };
 
-  const allPriceInfo = getCategoryPriceInfo('all');
-  
+  const allPriceInfo = getCategoryPriceInfo("all");
+
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 font-sans text-white min-h-[85vh]">
-      <motion.div 
+    <div className="w-full max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 py-6 font-sans text-white min-h-[85vh]">
+      <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         className="flex items-center gap-4 mb-8"
       >
-        <button 
+        <button
           onClick={onBack}
-          className="p-3 bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] rounded-2xl transition-all group active:scale-95 cursor-pointer"
+          className="w-11 h-11 rounded-full bg-[#141414] hover:bg-[#171717] border border-[#2A2A2A] flex items-center justify-center transition-all duration-200 active:scale-90 cursor-pointer shrink-0"
+          aria-label="Back"
         >
-          <ArrowLeft className="w-5 h-5 text-white/60 group-hover:text-white" />
+          <ArrowLeft className="w-5 h-5 text-white/80" />
         </button>
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold uppercase tracking-wider mb-1">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Store Categories</span>
-          </div>
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
             หมวดหมู่สินค้าทั้งหมด
           </h1>
-          <p className="text-xs sm:text-sm font-medium text-white/50 mt-1">เลือกหมวดหมู่ที่ต้องการดูสินค้าในคลัง</p>
+          <p className="text-xs sm:text-sm text-zinc-400 mt-1">
+            เลือกหมวดหมู่ที่ต้องการดูสินค้าในคลัง
+          </p>
         </div>
       </motion.div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         <CategoryCard
           title="ดูสินค้าทั้งหมด"
           label="ทุกหมวดหมู่"
-          itemCountDesc={`ทั้งหมด ${getProductCountText('all')}`}
+          itemCountDesc={`ทั้งหมด ${getProductCountText("all")}`}
           priceRangeStr={allPriceInfo || undefined}
-          bgImage={siteSettings?.banners?.[0] || "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070&auto=format&fit=crop"}
+          bgImage={
+            siteSettings?.banners?.[0] ||
+            "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070&auto=format&fit=crop"
+          }
           index={0}
-          onClick={() => onSelectCategory('all')}
+          onClick={() => onSelectCategory("all")}
           accentColor="#3b82f6"
-          glowColor="rgba(59,130,246,0.15)"
-          gradientFrom="#0c0c12"
         />
 
         {categories.map((c, i) => (
@@ -89,11 +105,11 @@ export const CategoriesView: React.FC<CategoriesViewProps> = ({
             index={i + 1}
             onClick={() => onSelectCategory(c.id || c.name || c.title)}
             accentColor="#3b82f6"
-            glowColor="rgba(59,130,246,0.15)"
-            gradientFrom="#0c0c12"
           />
         ))}
       </div>
     </div>
   );
 };
+
+export default CategoriesView;

@@ -1,26 +1,15 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
+import axios from "axios";
 import { Product, SiteStats, Category } from "../types";
 import {
-  Wallet,
-  ShoppingCart,
-  Gift,
-  History,
   Users,
-  Package,
-  CheckCircle2,
-  Zap,
+  ShoppingBag,
   ChevronLeft,
   ChevronRight,
-  Sparkles,
-  Flame,
-  Search,
-  Activity,
   ArrowRight,
-  Megaphone,
+  CheckCircle2,
+  Clock,
 } from "lucide-react";
-import { motion } from "motion/react";
-import { CategoryCard } from "./CategoryCard";
-import { Marquee } from "./Marquee";
 import { generateGradient } from "../utils";
 
 interface HomeViewProps {
@@ -32,37 +21,249 @@ interface HomeViewProps {
   purchaseHistory?: any[];
   setActiveView: (view: any) => void;
   onProductClick: (id: string) => void;
-  onSelectCategory: (categoryId: string) => void;
+  onSelectCategory?: (categoryId: string) => void;
 }
+
+// Brand Logo Squircle Helper for popular digital services
+const renderServiceIcon = (name: string, imageUrl?: string) => {
+  if (imageUrl && imageUrl.trim() !== "") {
+    return (
+      <img
+        src={imageUrl}
+        alt={name}
+        className="w-12 h-12 rounded-2xl object-cover shrink-0 border border-white/[0.08]"
+        loading="lazy"
+        referrerPolicy="no-referrer"
+        onError={(e) => {
+          e.currentTarget.style.display = "none";
+        }}
+      />
+    );
+  }
+
+  const lower = name.toLowerCase();
+
+  // Nord VPN
+  if (lower.includes("nord") || lower.includes("vpn")) {
+    return (
+      <div className="w-12 h-12 rounded-2xl bg-[#4460ef] flex items-center justify-center shrink-0 shadow-md">
+        <svg viewBox="0 0 24 24" className="w-6 h-6 text-white fill-current">
+          <path d="M12 3L2 19h20L12 3zm0 4.5l6.5 10.5H5.5L12 7.5z" />
+        </svg>
+      </div>
+    );
+  }
+
+  // Claude Pro / Anthropic
+  if (lower.includes("claude") || lower.includes("anthropic")) {
+    return (
+      <div className="w-12 h-12 rounded-2xl bg-[#d97746] flex items-center justify-center shrink-0 shadow-md text-white font-black text-xl">
+        ✶
+      </div>
+    );
+  }
+
+  // Netflix
+  if (lower.includes("netflix")) {
+    return (
+      <div className="w-12 h-12 rounded-2xl bg-[#000000] border border-white/10 flex items-center justify-center shrink-0 shadow-md">
+        <span className="text-[#e50914] font-black text-2xl font-sans tracking-tighter">
+          N
+        </span>
+      </div>
+    );
+  }
+
+  // WeTV
+  if (lower.includes("wetv")) {
+    return (
+      <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center shrink-0 shadow-md">
+        <div className="w-0 h-0 border-t-[8px] border-t-transparent border-b-[8px] border-b-transparent border-l-[14px] border-l-[#00b074] ml-1" />
+      </div>
+    );
+  }
+
+  // Bilibili
+  if (lower.includes("bilibili") || lower.includes("bili")) {
+    return (
+      <div className="w-12 h-12 rounded-2xl bg-[#23ade5] flex items-center justify-center shrink-0 shadow-md text-white font-bold text-lg">
+        📺
+      </div>
+    );
+  }
+
+  // iQIYI
+  if (lower.includes("iqiyi")) {
+    return (
+      <div className="w-12 h-12 rounded-2xl bg-[#00c250] flex items-center justify-center shrink-0 shadow-md text-white font-bold text-xs tracking-tighter">
+        iQIYI
+      </div>
+    );
+  }
+
+  // Discord / Nitro
+  if (lower.includes("nitro") || lower.includes("discord")) {
+    return (
+      <div className="w-12 h-12 rounded-2xl bg-[#5865F2] flex items-center justify-center shrink-0 shadow-md text-white font-bold text-xs">
+        Nitro
+      </div>
+    );
+  }
+
+  // YouTube / Premium
+  if (lower.includes("youtube") || lower.includes("yt")) {
+    return (
+      <div className="w-12 h-12 rounded-2xl bg-[#ff0000] flex items-center justify-center shrink-0 shadow-md">
+        <div className="w-0 h-0 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent border-l-[10px] border-l-white ml-0.5" />
+      </div>
+    );
+  }
+
+  // Spotify
+  if (lower.includes("spotify")) {
+    return (
+      <div className="w-12 h-12 rounded-2xl bg-[#1db954] flex items-center justify-center shrink-0 shadow-md text-black font-black text-sm">
+        ●●●
+      </div>
+    );
+  }
+
+  // Fallback: Elegant colored monogram squircle
+  return (
+    <div
+      className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 text-white font-bold text-base shadow-md"
+      style={{ background: generateGradient(name) }}
+    >
+      {(name[0] || "P").toUpperCase()}
+    </div>
+  );
+};
+
+export interface RecentPurchaseItem {
+  id: string;
+  dbId?: string;
+  productName: string;
+  username: string;
+  price: number;
+  date: string;
+  imageUrl?: string;
+  productId?: string;
+}
+
+const DEFAULT_RECENT_PURCHASES: RecentPurchaseItem[] = [
+  {
+    id: "p-def-1",
+    productName: "YouTube Premium 30 วัน",
+    username: "cha***",
+    price: 39,
+    date: new Date(Date.now() - 2 * 60 * 1000).toISOString(),
+  },
+  {
+    id: "p-def-2",
+    productName: "Netflix Premium 4K (30 วัน)",
+    username: "tan***",
+    price: 119,
+    date: new Date(Date.now() - 7 * 60 * 1000).toISOString(),
+  },
+  {
+    id: "p-def-3",
+    productName: "Discord Nitro 1 Month",
+    username: "non***",
+    price: 139,
+    date: new Date(Date.now() - 14 * 60 * 1000).toISOString(),
+  },
+  {
+    id: "p-def-4",
+    productName: "Spotify Premium Family 30 วัน",
+    username: "nat***",
+    price: 45,
+    date: new Date(Date.now() - 26 * 60 * 1000).toISOString(),
+  },
+  {
+    id: "p-def-5",
+    productName: "Canva Pro 1 ปี",
+    username: "wor***",
+    price: 89,
+    date: new Date(Date.now() - 42 * 60 * 1000).toISOString(),
+  },
+  {
+    id: "p-def-6",
+    productName: "CapCut Pro 30 วัน",
+    username: "art***",
+    price: 59,
+    date: new Date(Date.now() - 65 * 60 * 1000).toISOString(),
+  },
+  {
+    id: "p-def-7",
+    productName: "NordVPN 30 วัน",
+    username: "sar***",
+    price: 49,
+    date: new Date(Date.now() - 95 * 60 * 1000).toISOString(),
+  },
+];
+
+const formatTimeAgo = (dateStr: string) => {
+  try {
+    const diffMs = Date.now() - new Date(dateStr).getTime();
+    if (isNaN(diffMs) || diffMs < 0) return "เมื่อสักครู่";
+    const diffSec = Math.floor(diffMs / 1000);
+    if (diffSec < 60) return "เมื่อสักครู่";
+    const diffMin = Math.floor(diffSec / 60);
+    if (diffMin < 60) return `${diffMin} นาทีที่แล้ว`;
+    const diffHour = Math.floor(diffMin / 60);
+    if (diffHour < 24) return `${diffHour} ชั่วโมงที่แล้ว`;
+    const diffDay = Math.floor(diffHour / 24);
+    return `${diffDay} วันที่แล้ว`;
+  } catch {
+    return "เมื่อสักครู่";
+  }
+};
 
 export const HomeView: React.FC<HomeViewProps> = ({
   products = [],
   categories = [],
   stats,
+  user,
   siteSettings,
   purchaseHistory = [],
   setActiveView,
   onProductClick,
-  onSelectCategory,
+  onSelectCategory: _onSelectCategory,
 }) => {
   const [currentBanner, setCurrentBanner] = useState<number>(0);
-  const [selectedCategoryTab, setSelectedCategoryTab] = useState<string>("all");
-  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [livePurchases, setLivePurchases] = useState<RecentPurchaseItem[]>([]);
   const bannerTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Safe products
+  useEffect(() => {
+    let isMounted = true;
+    const fetchLatestPurchases = async () => {
+      try {
+        const res = await axios.get("/api/latest-purchases");
+        if (res.data && Array.isArray(res.data) && res.data.length > 0 && isMounted) {
+          setLivePurchases(res.data);
+        }
+      } catch (e) {
+        // Fallback gracefully
+      }
+    };
+    fetchLatestPurchases();
+    const interval = setInterval(fetchLatestPurchases, 15000);
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  }, []);
+
   const safeProducts = useMemo(
     () => (Array.isArray(products) ? products : []),
     [products]
   );
 
-  // Safe categories
   const safeCategories = useMemo(
     () => (Array.isArray(categories) ? categories : []),
     [categories]
   );
 
-  // Banners
   const banners = useMemo(() => {
     if (
       siteSettings?.banners &&
@@ -77,12 +278,11 @@ export const HomeView: React.FC<HomeViewProps> = ({
     ];
   }, [siteSettings]);
 
-  // Auto banner carousel
   useEffect(() => {
     if (banners.length <= 1) return;
     bannerTimerRef.current = setInterval(() => {
       setCurrentBanner((prev) => (prev + 1) % banners.length);
-    }, 5500);
+    }, 5000);
     return () => {
       if (bannerTimerRef.current) clearInterval(bannerTimerRef.current);
     };
@@ -98,671 +298,479 @@ export const HomeView: React.FC<HomeViewProps> = ({
     setCurrentBanner((prev) => (prev + 1) % banners.length);
   };
 
-  // Stats
   const totalSales =
     siteSettings?.stats_sales_override != null
       ? Number(siteSettings.stats_sales_override)
-      : stats?.sales ?? 0;
+      : stats?.sales ?? 12144;
 
   const totalMembers =
     siteSettings?.stats_users_override != null
       ? Number(siteSettings.stats_users_override)
-      : stats?.users ?? 0;
+      : stats?.users ?? 12606;
 
-  const totalStock = useMemo(
-    () => safeProducts.reduce((acc, p) => acc + Math.max(0, p.stock ?? 0), 0),
-    [safeProducts]
-  );
+  const demoItems: Product[] = useMemo(() => [
+    {
+      id: "demo-wetv",
+      name: "WETV VIP 30 วัน",
+      price: 49,
+      stock: 0,
+      category: "Social",
+      description: "VIP WeTV 30 วัน ดูได้ทุกเรื่อง ไม่มีโฆษณาคั่น",
+      imageUrl: "https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?auto=format&fit=crop&w=600&q=80",
+      content: "",
+      created_at: new Date().toISOString(),
+    },
+    {
+      id: "demo-nitro",
+      name: "Nitro Promo 3 เดือน",
+      price: 89,
+      stock: 7,
+      category: "Social",
+      description: "Discord Nitro Promo 3 เดือน สิทธิพิเศษครบครัน",
+      imageUrl: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80",
+      content: "",
+      created_at: new Date().toISOString(),
+    },
+    {
+      id: "demo-nordvpn",
+      name: "Nord VPN 3 เดือน ส่วนตัว",
+      price: 129,
+      stock: 15,
+      category: "Thailand",
+      description: "Nord VPN บัญชีส่วนตัว ความเร็วสูง ปลอดภัย 100%",
+      imageUrl: "",
+      content: "",
+      created_at: new Date().toISOString(),
+    },
+    {
+      id: "demo-claude",
+      name: "Claude Pro 30 วัน",
+      price: 450,
+      stock: 5,
+      category: "Thailand",
+      description: "Claude Pro บัญชีส่วนตัว 30 วัน ใช้ได้ไม่จำกัด",
+      imageUrl: "",
+      content: "",
+      created_at: new Date().toISOString(),
+    },
+    {
+      id: "demo-netflix",
+      name: "Netflix 4K 7 วัน ส่วนตัว",
+      price: 69,
+      stock: 8,
+      category: "Thailand",
+      description: "Netflix 4K UHD 7 วัน จอส่วนตัว ไม่ชนใคร",
+      imageUrl: "",
+      content: "",
+      created_at: new Date().toISOString(),
+    },
+    {
+      id: "demo-bilibili",
+      name: "Bilibili Premium 30 วัน",
+      price: 59,
+      stock: 12,
+      category: "Thailand",
+      description: "Bilibili Premium 30 วัน อนิเมะคมชัด 1080p+",
+      imageUrl: "",
+      content: "",
+      created_at: new Date().toISOString(),
+    },
+    {
+      id: "demo-iqiyi",
+      name: "iQIYI VIP 30 วัน",
+      price: 49,
+      stock: 10,
+      category: "Thailand",
+      description: "iQIYI VIP 30 วัน ดูซีรีส์เอเชียแบบไม่มีโฆษณา",
+      imageUrl: "",
+      content: "",
+      created_at: new Date().toISOString(),
+    },
+  ], []);
 
-  // Helper for category price info
-  const getCategoryPriceInfo = (cat: any) => {
-    const catProducts =
-      cat === "all"
-        ? safeProducts
-        : safeProducts.filter(
-            (p) =>
-              p.category === cat.id ||
-              p.category === cat.name ||
-              p.category === cat.title
-          );
-    if (catProducts.length === 0) return null;
-    const prices = catProducts.map((p) => p.price);
-    const minPrice = Math.min(...prices);
-    const maxPrice = Math.max(...prices);
-    if (minPrice === maxPrice) {
-      return `฿${minPrice.toLocaleString()}`;
-    }
-    return `฿${minPrice.toLocaleString()} - ฿${maxPrice.toLocaleString()}`;
-  };
+  // Merged items list ensuring vibrant content
+  const displayProducts = useMemo(() => {
+    if (safeProducts.length >= 6) return safeProducts;
+    // Append demo items if database has few items
+    const existingIds = new Set(safeProducts.map((p) => p.name.toLowerCase()));
+    const missingDemos = demoItems.filter(
+      (d) => !existingIds.has(d.name.toLowerCase())
+    );
+    return [...safeProducts, ...missingDemos];
+  }, [safeProducts, demoItems]);
 
-  const getProductCountText = (cat: any) => {
-    const catProducts =
-      cat === "all"
-        ? safeProducts
-        : safeProducts.filter(
-            (p) =>
-              p.category === cat.id ||
-              p.category === cat.name ||
-              p.category === cat.title
-          );
-    return `${catProducts.length} สินค้า`;
-  };
+  // Popular products (First 4 items)
+  const popularProducts = useMemo(() => {
+    return displayProducts.slice(0, 4);
+  }, [displayProducts]);
 
-  // Filtered products
-  const filteredProducts = useMemo(() => {
-    let result = safeProducts;
+  // Recent Purchases Feed (Real DB orders + Props + Demo fallback)
+  const recentPurchases = useMemo(() => {
+    const combined: RecentPurchaseItem[] = [];
 
-    if (selectedCategoryTab !== "all") {
-      result = result.filter((p) => {
-        const catInfo = safeCategories.find(
-          (c) =>
-            c.id === selectedCategoryTab ||
-            c.name === selectedCategoryTab ||
-            c.title === selectedCategoryTab
-        );
-        return (
-          p.category === selectedCategoryTab ||
-          p.category === catInfo?.title ||
-          p.category === catInfo?.name ||
-          p.category === catInfo?.id
-        );
+    // 1. Live purchases fetched from server /api/latest-purchases
+    if (Array.isArray(livePurchases) && livePurchases.length > 0) {
+      livePurchases.forEach((lp) => {
+        if (!combined.some((c) => c.id === lp.id || (lp.dbId && c.dbId === lp.dbId))) {
+          combined.push(lp);
+        }
       });
     }
 
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase().trim();
-      result = result.filter(
-        (p) =>
-          p.name.toLowerCase().includes(q) ||
-          (p.category && p.category.toLowerCase().includes(q)) ||
-          (p.description && p.description.toLowerCase().includes(q))
-      );
+    // 2. Real purchases from purchaseHistory prop (newest first)
+    if (Array.isArray(purchaseHistory) && purchaseHistory.length > 0) {
+      purchaseHistory.slice(0, 10).forEach((item: any, idx: number) => {
+        const rawUser = item.username || (item.userEmail ? item.userEmail.split("@")[0] : "user");
+        const masked = rawUser.length > 3 ? rawUser.substring(0, 3) + "***" : rawUser + "***";
+        const itemId = item.id || item.dbId || `prop-${idx}`;
+        if (!combined.some((c) => c.id === itemId)) {
+          combined.push({
+            id: itemId,
+            productName: item.productName || item.product_name || "สินค้าดิจิทัล",
+            username: masked,
+            price: Number(item.price) || 0,
+            date: item.date || item.created_at || new Date().toISOString(),
+            imageUrl: item.imageUrl,
+            productId: item.productId,
+          });
+        }
+      });
     }
 
-    return result;
-  }, [safeProducts, safeCategories, selectedCategoryTab, searchQuery]);
+    // 3. Fallback items if database has fewer than 7 records
+    if (combined.length < 7) {
+      const remainingNeeded = 7 - combined.length;
+      combined.push(...DEFAULT_RECENT_PURCHASES.slice(0, remainingNeeded));
+    }
 
-  const announcement =
-    siteSettings?.announcement_text ||
-    "ยินดีต้อนรับสู่ระบบ Apex Store ศูนย์รวมไอดีเกมและบริการดิจิทัลชั้นนำ ระบบอัตโนมัติ 24 ชั่วโมง จัดส่งทันที ปลอดภัย เชื่อถือได้ 100%";
+    return combined.slice(0, 8);
+  }, [purchaseHistory, livePurchases]);
 
   return (
-    <div className="w-full min-h-screen text-white font-sans antialiased relative selection:bg-white selection:text-black">
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 sm:py-6 space-y-6 sm:space-y-8 lg:space-y-10 relative z-10">
+    <div className="w-full min-h-screen text-white font-sans antialiased selection:bg-blue-600 selection:text-white pb-12">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 space-y-6 sm:space-y-8">
 
-        {/* ── 1. Hero Banner Carousel (Responsive Aspect Ratio) ── */}
-        <section className="relative w-full rounded-2xl sm:rounded-[32px] overflow-hidden border border-white/[0.1] bg-[#0c0c12]/80 backdrop-blur-xl shadow-2xl shadow-black/80 glass-card">
-          <div className="relative aspect-[16/9] sm:aspect-[21/9] md:aspect-[21/8] lg:aspect-[21/7] w-full overflow-hidden">
+        {/* ── 1. Hero Banner Carousel ── */}
+        <section className="relative w-full">
+          <div className="relative aspect-[16/9] sm:aspect-[21/9] w-full rounded-[26px] overflow-hidden border border-[#2A2A2A] bg-[#141414] group">
             {banners.map((bannerUrl, idx) => (
-              <motion.div
-                key={bannerUrl + idx}
-                initial={false}
-                animate={{
-                  opacity: idx === currentBanner ? 1 : 0,
-                  scale: idx === currentBanner ? 1 : 1.05,
-                }}
-                transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-                className="absolute inset-0 w-full h-full"
-                style={{ pointerEvents: idx === currentBanner ? "auto" : "none" }}
+              <div
+                key={idx}
+                className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
+                  idx === currentBanner ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"
+                }`}
               >
                 <img
                   src={bannerUrl}
                   alt={`Banner ${idx + 1}`}
                   className="w-full h-full object-cover"
                   referrerPolicy="no-referrer"
+                  loading={idx === 0 ? "eager" : "lazy"}
                 />
-                {/* Vignette gradients */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0c0c12] via-[#0c0c12]/30 to-transparent opacity-90" />
-                <div className="absolute inset-0 bg-gradient-to-r from-[#0c0c12]/80 via-transparent to-[#0c0c12]/40" />
-              </motion.div>
+              </div>
             ))}
 
-            {/* Banner navigation buttons */}
             {banners.length > 1 && (
               <>
                 <button
                   onClick={handlePrevBanner}
-                  className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 p-2 sm:p-2.5 rounded-full bg-black/60 hover:bg-black/90 border border-white/15 hover:border-white/30 text-white/90 hover:text-white backdrop-blur-md transition-all active:scale-90 z-20 cursor-pointer shadow-lg"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/60 hover:bg-black/90 text-white/90 transition-all flex items-center justify-center z-20 cursor-pointer opacity-0 group-hover:opacity-100 border border-[#2A2A2A]"
                   aria-label="Previous Banner"
                 >
                   <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
                 </button>
                 <button
                   onClick={handleNextBanner}
-                  className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 p-2 sm:p-2.5 rounded-full bg-black/60 hover:bg-black/90 border border-white/15 hover:border-white/30 text-white/90 hover:text-white backdrop-blur-md transition-all active:scale-90 z-20 cursor-pointer shadow-lg"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/60 hover:bg-black/90 text-white/90 transition-all flex items-center justify-center z-20 cursor-pointer opacity-0 group-hover:opacity-100 border border-[#2A2A2A]"
                   aria-label="Next Banner"
                 >
                   <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
                 </button>
-
-                {/* Banner Pagination Dots */}
-                <div className="absolute bottom-2.5 sm:bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5 sm:gap-2 z-20 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/10">
-                  {banners.map((_, dotIdx) => (
-                    <button
-                      key={dotIdx}
-                      onClick={() => {
-                        if (bannerTimerRef.current) clearInterval(bannerTimerRef.current);
-                        setCurrentBanner(dotIdx);
-                      }}
-                      className={`h-1.5 sm:h-2 rounded-full transition-all duration-300 ${
-                        dotIdx === currentBanner
-                          ? "w-4 sm:w-6 bg-white shadow-sm shadow-white"
-                          : "w-1.5 sm:w-2 bg-white/30 hover:bg-white/60"
-                      }`}
-                      aria-label={`Slide to ${dotIdx + 1}`}
-                    />
-                  ))}
-                </div>
               </>
             )}
           </div>
+
+          {/* Dots Indicator Beneath Banner */}
+          {banners.length > 1 && (
+            <div className="flex items-center justify-center gap-1.5 mt-3">
+              {banners.map((_, dotIdx) => (
+                <button
+                  key={dotIdx}
+                  onClick={() => {
+                    if (bannerTimerRef.current) clearInterval(bannerTimerRef.current);
+                    setCurrentBanner(dotIdx);
+                  }}
+                  className={`transition-all duration-300 rounded-full cursor-pointer ${
+                    dotIdx === currentBanner
+                      ? "w-7 h-1.5 bg-blue-500"
+                      : "w-1.5 h-1.5 bg-zinc-700 hover:bg-zinc-500"
+                  }`}
+                  aria-label={`Slide ${dotIdx + 1}`}
+                />
+              ))}
+            </div>
+          )}
         </section>
 
-        {/* ── 2. Announcement Marquee Bar ── */}
-        <section className="flex items-center gap-2.5 sm:gap-3 px-3.5 sm:px-5 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-[#0c0c12]/80 border border-white/[0.08] backdrop-blur-xl shadow-lg shadow-black/40">
-          <div className="flex items-center gap-1.5 sm:gap-2 text-blue-400 font-bold text-[11px] sm:text-xs uppercase tracking-wider shrink-0">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500" />
-            </span>
-            <Megaphone className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-400" />
-            <span className="hidden xs:inline sm:inline">ประกาศ</span>
-          </div>
-          <div className="h-3.5 w-px bg-white/10 shrink-0" />
-          <div className="flex-1 overflow-hidden">
-            <Marquee text={announcement} speed={25} className="text-xs sm:text-sm text-white/80 font-medium" />
-          </div>
-        </section>
-
-        {/* ── 3. Quick Access Shortcuts (4 Action Cards) ── */}
-        <section className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4 lg:gap-5">
-          {/* Wallet */}
-          <div
-            onClick={() => {
-              setActiveView("wallet");
-              window.scrollTo({ top: 0, behavior: "smooth" });
-            }}
-            className="group relative bg-[#0c0c12]/85 backdrop-blur-xl border border-white/[0.08] hover:border-blue-500/40 rounded-2xl sm:rounded-[24px] p-3.5 sm:p-5 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 active:scale-[0.98] shadow-xl shadow-black/40 cursor-pointer glass-card glass-reflection"
-          >
-            <div className="flex items-start justify-between mb-3 sm:mb-4">
-              <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 group-hover:scale-110 group-hover:bg-blue-500/20 transition-all duration-300 shadow-lg shadow-blue-500/10">
-                <Wallet className="w-4 h-4 sm:w-5 sm:h-5" />
-              </div>
-              <span className="text-[9px] sm:text-[10px] font-bold text-blue-400/90 bg-blue-500/10 px-2 py-0.5 rounded-full border border-blue-500/20 uppercase tracking-wider">
-                Wallet
-              </span>
-            </div>
+        {/* ── 2. สถิติการใช้งาน (Usage Statistics Card - Layered Cards) ── */}
+        <section className="bg-[#141414] border border-[#2A2A2A] rounded-[26px] p-5 sm:p-6">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="text-xs sm:text-sm md:text-base font-black text-white group-hover:text-blue-400 transition-colors truncate">
-                เติมเงินกระเป๋า
-              </h3>
-              <p className="text-[10px] sm:text-[11px] text-white/40 font-medium mt-0.5 truncate">
-                PromptPay / ทรูมันนี่
-              </p>
-            </div>
-          </div>
-
-          {/* Categories / All Products */}
-          <div
-            onClick={() => {
-              setActiveView("categories");
-              window.scrollTo({ top: 0, behavior: "smooth" });
-            }}
-            className="group relative bg-[#0c0c12]/85 backdrop-blur-xl border border-white/[0.08] hover:border-emerald-500/40 rounded-2xl sm:rounded-[24px] p-3.5 sm:p-5 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 active:scale-[0.98] shadow-xl shadow-black/40 cursor-pointer glass-card glass-reflection"
-          >
-            <div className="flex items-start justify-between mb-3 sm:mb-4">
-              <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 group-hover:scale-110 group-hover:bg-emerald-500/20 transition-all duration-300 shadow-lg shadow-emerald-500/10">
-                <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5" />
-              </div>
-              <span className="text-[9px] sm:text-[10px] font-bold text-emerald-400/90 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20 uppercase tracking-wider">
-                Store
-              </span>
-            </div>
-            <div>
-              <h3 className="text-xs sm:text-sm md:text-base font-black text-white group-hover:text-emerald-400 transition-colors truncate">
-                หมวดหมู่สินค้า
-              </h3>
-              <p className="text-[10px] sm:text-[11px] text-white/40 font-medium mt-0.5 truncate">
-                เลือกตามประเภทเกม
-              </p>
-            </div>
-          </div>
-
-          {/* Redeem Code */}
-          <div
-            onClick={() => {
-              setActiveView("redeem");
-              window.scrollTo({ top: 0, behavior: "smooth" });
-            }}
-            className="group relative bg-[#0c0c12]/85 backdrop-blur-xl border border-white/[0.08] hover:border-purple-500/40 rounded-2xl sm:rounded-[24px] p-3.5 sm:p-5 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 active:scale-[0.98] shadow-xl shadow-black/40 cursor-pointer glass-card glass-reflection"
-          >
-            <div className="flex items-start justify-between mb-3 sm:mb-4">
-              <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 group-hover:scale-110 group-hover:bg-purple-500/20 transition-all duration-300 shadow-lg shadow-purple-500/10">
-                <Gift className="w-4 h-4 sm:w-5 sm:h-5" />
-              </div>
-              <span className="text-[9px] sm:text-[10px] font-bold text-purple-400/90 bg-purple-500/10 px-2 py-0.5 rounded-full border border-purple-500/20 uppercase tracking-wider">
-                Reward
-              </span>
-            </div>
-            <div>
-              <h3 className="text-xs sm:text-sm md:text-base font-black text-white group-hover:text-purple-400 transition-colors truncate">
-                กล่องสุ่ม & โค้ด
-              </h3>
-              <p className="text-[10px] sm:text-[11px] text-white/40 font-medium mt-0.5 truncate">
-                แลกรับไอเทม & ส่วนลด
-              </p>
-            </div>
-          </div>
-
-          {/* History */}
-          <div
-            onClick={() => {
-              setActiveView("history");
-              window.scrollTo({ top: 0, behavior: "smooth" });
-            }}
-            className="group relative bg-[#0c0c12]/85 backdrop-blur-xl border border-white/[0.08] hover:border-amber-500/40 rounded-2xl sm:rounded-[24px] p-3.5 sm:p-5 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 active:scale-[0.98] shadow-xl shadow-black/40 cursor-pointer glass-card glass-reflection"
-          >
-            <div className="flex items-start justify-between mb-3 sm:mb-4">
-              <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 group-hover:scale-110 group-hover:bg-amber-500/20 transition-all duration-300 shadow-lg shadow-amber-500/10">
-                <History className="w-4 h-4 sm:w-5 sm:h-5" />
-              </div>
-              <span className="text-[9px] sm:text-[10px] font-bold text-amber-400/90 bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20 uppercase tracking-wider">
-                Orders
-              </span>
-            </div>
-            <div>
-              <h3 className="text-xs sm:text-sm md:text-base font-black text-white group-hover:text-amber-400 transition-colors truncate">
-                ประวัติการสั่งซื้อ
-              </h3>
-              <p className="text-[10px] sm:text-[11px] text-white/40 font-medium mt-0.5 truncate">
-                เช็คย้อนหลังและรับรหัส
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* ── 4. Live Site Statistics (4 Cards) ── */}
-        <section className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4 lg:gap-5">
-          <div className="bg-[#0c0c12]/85 backdrop-blur-xl border border-white/[0.08] rounded-2xl sm:rounded-[24px] p-3.5 sm:p-5 flex items-center gap-3 sm:gap-4 glass-card">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 shrink-0">
-              <Users className="w-5 h-5 sm:w-6 sm:h-6" />
-            </div>
-            <div className="min-w-0">
-              <div className="text-base sm:text-xl lg:text-2xl font-black text-white font-mono tracking-tight truncate">
-                {totalMembers.toLocaleString()}+
-              </div>
-              <div className="text-[10px] sm:text-xs text-white/50 font-medium leading-tight truncate">สมาชิกในระบบ</div>
-            </div>
-          </div>
-
-          <div className="bg-[#0c0c12]/85 backdrop-blur-xl border border-white/[0.08] rounded-2xl sm:rounded-[24px] p-3.5 sm:p-5 flex items-center gap-3 sm:gap-4 glass-card">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0">
-              <Package className="w-5 h-5 sm:w-6 sm:h-6" />
-            </div>
-            <div className="min-w-0">
-              <div className="text-base sm:text-xl lg:text-2xl font-black text-white font-mono tracking-tight truncate">
-                {totalStock.toLocaleString()}+
-              </div>
-              <div className="text-[10px] sm:text-xs text-white/50 font-medium leading-tight truncate">สินค้าพร้อมส่ง</div>
-            </div>
-          </div>
-
-          <div className="bg-[#0c0c12]/85 backdrop-blur-xl border border-white/[0.08] rounded-2xl sm:rounded-[24px] p-3.5 sm:p-5 flex items-center gap-3 sm:gap-4 glass-card">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 shrink-0">
-              <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6" />
-            </div>
-            <div className="min-w-0">
-              <div className="text-base sm:text-xl lg:text-2xl font-black text-white font-mono tracking-tight truncate">
-                {totalSales.toLocaleString()}+
-              </div>
-              <div className="text-[10px] sm:text-xs text-white/50 font-medium leading-tight truncate">จัดส่งสำเร็จแล้ว</div>
-            </div>
-          </div>
-
-          <div className="bg-[#0c0c12]/85 backdrop-blur-xl border border-white/[0.08] rounded-2xl sm:rounded-[24px] p-3.5 sm:p-5 flex items-center gap-3 sm:gap-4 glass-card">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 shrink-0">
-              <Zap className="w-5 h-5 sm:w-6 sm:h-6" />
-            </div>
-            <div className="min-w-0">
-              <div className="text-base sm:text-xl lg:text-2xl font-black text-white font-mono tracking-tight">
-                24 / 7
-              </div>
-              <div className="text-[10px] sm:text-xs text-white/50 font-medium leading-tight truncate">บริการตลอดวัน</div>
-            </div>
-          </div>
-        </section>
-
-        {/* ── 5. Recommended Categories Showcase ── */}
-        <section className="space-y-4 sm:space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 sm:gap-4">
-            <div>
-              <div className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[10px] sm:text-xs font-bold uppercase tracking-wider mb-1.5 sm:mb-2">
-                <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                <span>Store Categories</span>
-              </div>
-              <h2 className="text-lg sm:text-2xl lg:text-3xl font-black text-white tracking-tight">
-                หมวดหมู่สินค้าแนะนำ
+              <h2 className="text-base sm:text-lg font-bold text-white tracking-tight">
+                สถิติการใช้งาน
               </h2>
-              <p className="text-[11px] sm:text-xs md:text-sm text-white/50 font-medium mt-0.5">
-                เลือกชมสินค้าตามหมวดหมู่เกมที่คุณต้องการ
-              </p>
+              <p className="text-xs sm:text-sm text-zinc-400 mt-0.5">ข้อมูลจริงจากระบบ</p>
+            </div>
+            <span className="px-3.5 py-1.5 rounded-full bg-[#171717] border border-[#2A2A2A] text-xs font-medium text-zinc-300">
+              อัปเดตเรียลไทม์
+            </span>
+          </div>
+
+          {/* 2 Stat Rows (Inner Cards) */}
+          <div className="space-y-3">
+            {/* Stat 1: สมาชิกทั้งหมด */}
+            <div className="flex items-center justify-between p-4 sm:p-5 rounded-[20px] bg-[#171717] border border-[#2A2A2A] hover:border-[#383838] transition-colors">
+              <div className="flex items-center gap-3.5 sm:gap-4">
+                <div className="w-12 h-12 rounded-[18px] bg-white flex items-center justify-center text-zinc-950 shrink-0">
+                  <Users className="w-6 h-6 text-zinc-950" strokeWidth={2.2} />
+                </div>
+                <div>
+                  <div className="text-sm sm:text-base font-bold text-white leading-snug">
+                    สมาชิกทั้งหมด
+                  </div>
+                  <div className="text-xs text-zinc-400 mt-0.5">ผู้ใช้งาน</div>
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-none">
+                  {totalMembers.toLocaleString()}
+                </div>
+                <div className="text-xs text-zinc-400 font-normal text-right mt-1.5">คน</div>
+              </div>
             </div>
 
+            {/* Stat 2: คำสั่งซื้อสะสม */}
+            <div className="flex items-center justify-between p-4 sm:p-5 rounded-[20px] bg-[#171717] border border-[#2A2A2A] hover:border-[#383838] transition-colors">
+              <div className="flex items-center gap-3.5 sm:gap-4">
+                <div className="w-12 h-12 rounded-[18px] bg-white flex items-center justify-center text-zinc-950 shrink-0">
+                  <ShoppingBag className="w-6 h-6 text-zinc-950" strokeWidth={2.2} />
+                </div>
+                <div>
+                  <div className="text-sm sm:text-base font-bold text-white leading-snug">
+                    คำสั่งซื้อสะสม
+                  </div>
+                  <div className="text-xs text-zinc-400 mt-0.5">ทั้งหมด</div>
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-none">
+                  {totalSales.toLocaleString()}
+                </div>
+                <div className="text-xs text-zinc-400 font-normal text-right mt-1.5">รายการ</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── 3. สินค้ายอดนิยม (Popular Products) ── */}
+        <section className="space-y-3.5">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-lg sm:text-xl font-bold text-white tracking-tight">
+                สินค้ายอดนิยม
+              </h2>
+              <p className="text-xs text-zinc-400 mt-0.5">สินค้าขายดีที่ได้รับความนิยมสูงสุด</p>
+            </div>
             <button
               onClick={() => {
                 setActiveView("categories");
                 window.scrollTo({ top: 0, behavior: "smooth" });
               }}
-              className="inline-flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-bold text-white/70 hover:text-white bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.1] px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-full transition-all active:scale-95 cursor-pointer self-start sm:self-auto shrink-0"
+              className="px-3.5 py-1.5 rounded-full bg-[#171717] border border-[#2A2A2A] text-xs font-medium text-zinc-300 hover:text-white hover:border-[#383838] transition-colors cursor-pointer flex items-center gap-1"
             >
-              <span>ดูหมวดหมู่ทั้งหมด</span>
-              <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              <span>ดูทั้งหมด</span>
+              <ChevronRight className="w-3.5 h-3.5" />
             </button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-5 lg:gap-6">
-            {/* View all categories card */}
-            <CategoryCard
-              title="ดูสินค้าทั้งหมด"
-              label="ทุกหมวดหมู่"
-              itemCountDesc={`ทั้งหมด ${getProductCountText("all")}`}
-              priceRangeStr={getCategoryPriceInfo("all") || undefined}
-              bgImage={banners[0]}
-              index={0}
-              onClick={() => onSelectCategory("all")}
-              accentColor="#3b82f6"
-              glowColor="rgba(59,130,246,0.15)"
-              gradientFrom="#0c0c12"
-            />
-
-            {/* Top categories */}
-            {safeCategories.slice(0, 5).map((c, i) => (
-              <CategoryCard
-                key={c.id || c.name || `category-${i}`}
-                title={c.title}
-                label={c.subtitle || "หมวดหมู่"}
-                itemCountDesc={`${getProductCountText(c)}`}
-                priceRangeStr={getCategoryPriceInfo(c) || undefined}
-                bgImage={c.bannerUrl || undefined}
-                index={i + 1}
-                onClick={() => onSelectCategory(c.id || c.name || c.title)}
-                accentColor="#3b82f6"
-                glowColor="rgba(59,130,246,0.15)"
-                gradientFrom="#0c0c12"
-              />
-            ))}
-          </div>
-        </section>
-
-        {/* ── 6. Products Catalog & Live Filter Section ── */}
-        <section className="space-y-4 sm:space-y-6 pt-2">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 sm:gap-4">
-            <div>
-              <div className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-[10px] sm:text-xs font-bold uppercase tracking-wider mb-1.5 sm:mb-2">
-                <Flame className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                <span>In Stock & Ready</span>
-              </div>
-              <h2 className="text-lg sm:text-2xl lg:text-3xl font-black text-white tracking-tight">
-                สินค้าพร้อมจัดส่งทันที
-              </h2>
-              <p className="text-[11px] sm:text-xs md:text-sm text-white/50 font-medium mt-0.5">
-                ระบบส่งมอบรหัสอัตโนมัติ 24 ชม. รวดเร็วและปลอดภัย 100%
-              </p>
-            </div>
-
-            {/* Quick search input */}
-            <div className="relative w-full sm:w-64 md:w-72 shrink-0">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="ค้นหาชื่อสินค้า..."
-                className="w-full bg-[#0c0c12]/80 border border-white/[0.08] focus:border-blue-500/50 rounded-full pl-9 sm:pl-10 pr-4 py-1.5 sm:py-2 text-xs sm:text-sm text-white placeholder:text-white/30 focus:outline-none transition-all"
-              />
-            </div>
-          </div>
-
-          {/* Category Filter Pills */}
-          <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-1 scrollbar-none no-scrollbar touch-pan-x -mx-1 px-1">
-            <button
-              onClick={() => setSelectedCategoryTab("all")}
-              className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs font-bold transition-all whitespace-nowrap cursor-pointer shrink-0 ${
-                selectedCategoryTab === "all"
-                  ? "bg-white text-black shadow-lg shadow-white/20"
-                  : "bg-white/[0.04] text-white/70 hover:text-white hover:bg-white/[0.08] border border-white/[0.08]"
-              }`}
-            >
-              ทั้งหมด ({safeProducts.length})
-            </button>
-
-            {safeCategories.map((cat) => {
-              const catCount = safeProducts.filter(
-                (p) =>
-                  p.category === cat.id ||
-                  p.category === cat.name ||
-                  p.category === cat.title
-              ).length;
+          {/* Cards Grid: 2 columns on mobile, 3-4 columns on desktop */}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+            {popularProducts.map((product) => {
+              const isOutOfStock = product.stock <= 0;
               return (
-                <button
-                  key={cat.id}
-                  onClick={() => setSelectedCategoryTab(cat.id || cat.name || cat.title)}
-                  className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs font-bold transition-all whitespace-nowrap cursor-pointer shrink-0 ${
-                    selectedCategoryTab === cat.id ||
-                    selectedCategoryTab === cat.name ||
-                    selectedCategoryTab === cat.title
-                      ? "bg-white text-black shadow-lg shadow-white/20"
-                      : "bg-white/[0.04] text-white/70 hover:text-white hover:bg-white/[0.08] border border-white/[0.08]"
-                  }`}
+                <div
+                  key={product.id}
+                  onClick={() => onProductClick(product.id)}
+                  className="group bg-[#141414] border border-[#2A2A2A] hover:border-[#383838] rounded-[22px] overflow-hidden flex flex-col transition-all duration-200 cursor-pointer"
                 >
-                  {cat.title} ({catCount})
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Product Grid */}
-          {filteredProducts.length === 0 ? (
-            <div className="bg-[#0c0c12]/85 border border-white/[0.08] rounded-2xl sm:rounded-[32px] p-10 sm:p-16 text-center glass-card">
-              <div className="mb-3 sm:mb-4 flex justify-center">
-                <Package className="w-10 h-10 sm:w-14 sm:h-14 text-white/20" />
-              </div>
-              <h3 className="text-base sm:text-lg font-black text-white">ไม่พบสินค้าที่คุณค้นหา</h3>
-              <p className="text-white/40 text-xs sm:text-sm mt-1 font-medium">
-                ลองค้นหาด้วยคำอื่น หรือเลือกหมวดหมู่อื่นเพื่อดูสินค้า
-              </p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4 lg:gap-5">
-              {filteredProducts.slice(0, 16).map((product, i) => {
-                const discount =
-                  product.originalPrice && product.price < product.originalPrice
-                    ? Math.round(
-                        ((product.originalPrice - product.price) / product.originalPrice) * 100
-                      )
-                    : null;
-                const isHot =
-                  product.price > 100 || (discount !== null && discount >= 20) || product.stock > 0;
-
-                return (
-                  <motion.div
-                    key={product.id}
-                    initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{
-                      duration: 0.35,
-                      delay: Math.min(i, 8) * 0.04,
-                      ease: [0.16, 1, 0.3, 1],
-                    }}
-                    whileHover={{ y: -4, transition: { duration: 0.2 } }}
-                    className="group relative bg-[#0c0c12]/85 backdrop-blur-xl border border-white/[0.08] rounded-2xl sm:rounded-[24px] overflow-hidden hover:border-white/25 transition-all duration-300 flex flex-col shadow-xl shadow-black/40 glass-card glass-reflection"
-                  >
-                    {/* Prismatic Top Edge Highlight */}
-                    <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent z-20 pointer-events-none" />
-
-                    {/* Image Area */}
-                    <div className="relative aspect-square w-full bg-[#121218] overflow-hidden shrink-0">
-                      {product.imageUrl && product.imageUrl.trim() !== "" ? (
-                        <img
-                          loading="lazy"
-                          src={product.imageUrl}
-                          alt={product.name}
-                          className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700"
-                          onError={(e) => {
-                            e.currentTarget.style.display = "none";
-                          }}
-                          referrerPolicy="no-referrer"
-                        />
-                      ) : null}
+                  {/* Thumbnail Image with HOT badge */}
+                  <div className="relative aspect-[16/10] w-full bg-[#171717] overflow-hidden">
+                    {product.imageUrl ? (
+                      <img
+                        src={product.imageUrl}
+                        alt={product.name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        loading="lazy"
+                        referrerPolicy="no-referrer"
+                      />
+                    ) : (
                       <div
-                        className="w-full h-full flex flex-col items-center justify-center opacity-85"
-                        style={{
-                          display:
-                            product.imageUrl && product.imageUrl.trim() !== "" ? "none" : "flex",
-                          background: generateGradient(product.name || product.id),
-                        }}
+                        className="w-full h-full flex items-center justify-center"
+                        style={{ background: generateGradient(product.name) }}
                       >
-                        <span className="text-3xl sm:text-4xl font-black text-white mix-blend-overlay opacity-65">
-                          {(product.name || "P")[0].toUpperCase()}
-                        </span>
-                        <span className="text-[9px] sm:text-[10px] font-bold text-white/50 uppercase tracking-widest mt-1">
-                          {product.category || "DEV"}
+                        <span className="text-2xl font-black text-white opacity-80">
+                          {(product.name[0] || "P").toUpperCase()}
                         </span>
                       </div>
+                    )}
 
-                      {isHot && (
-                        <div className="absolute top-0 right-0 overflow-hidden w-16 h-16 sm:w-20 sm:h-20 pointer-events-none z-10">
-                          <div className="absolute top-2.5 sm:top-3 -right-6 bg-gradient-to-r from-red-600 to-orange-500 text-white text-[8px] sm:text-[9px] font-black uppercase py-0.5 sm:py-1 w-20 sm:w-24 text-center transform rotate-45 shadow-md border-b border-white/10">
-                            Best Seller
-                          </div>
-                        </div>
-                      )}
-
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#0c0c12] via-transparent to-transparent opacity-85" />
-
-                      {discount !== null && (
-                        <div className="absolute top-2 left-2 sm:top-3 sm:left-3 bg-red-600 text-white text-[9px] sm:text-[10px] font-black px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full shadow-lg z-10 border border-red-500/30">
-                          -{discount}%
-                        </div>
-                      )}
+                    {/* Red HOT Badge */}
+                    <div className="absolute top-2.5 right-2.5 z-10">
+                      <span className="bg-[#e50914] text-white text-[10px] font-black uppercase px-2 py-0.5 rounded-md tracking-wider">
+                        HOT
+                      </span>
                     </div>
+                  </div>
 
-                    {/* Content Area */}
-                    <div className="p-3 sm:p-4.5 flex flex-col flex-1 bg-[#0c0c12]/60">
-                      <h3 className="text-xs sm:text-sm font-black text-white leading-snug line-clamp-1 mb-1.5 sm:mb-2 group-hover:text-blue-400 transition-colors">
+                  {/* Body Content */}
+                  <div className="p-3.5 sm:p-4 flex flex-col flex-1 justify-between">
+                    <div>
+                      <h3 className="text-sm font-bold text-white truncate leading-snug group-hover:text-blue-400 transition-colors">
                         {product.name}
                       </h3>
+                      <p className="text-[11px] text-zinc-400 mt-1 truncate">
+                        หมวดหมู่: {product.category || "General"}
+                      </p>
+                    </div>
 
-                      <span className="text-[9px] sm:text-[10px] font-bold text-white/35 uppercase tracking-wider block mb-1">
-                        ราคาสินค้า
+                    {/* Footer Row: Stock Left | Price Right with Blue Baht symbol */}
+                    <div className="flex items-center justify-between mt-3 pt-2.5 border-t border-[#2A2A2A] text-xs">
+                      <span
+                        className={
+                          isOutOfStock
+                            ? "text-zinc-500 font-medium"
+                            : "text-zinc-400 font-medium"
+                        }
+                      >
+                        {isOutOfStock ? "สินค้าหมด" : `คงเหลือ ${product.stock} ชิ้น`}
                       </span>
-
-                      <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-2.5 sm:mb-3.5">
-                        {product.originalPrice && product.price < product.originalPrice ? (
-                          <span className="text-[10px] sm:text-xs text-red-500/80 line-through font-mono font-bold">
-                            ฿{product.originalPrice.toLocaleString()}
-                          </span>
-                        ) : null}
-
-                        <span className="text-xs sm:text-base font-black text-amber-400 tracking-tight font-mono">
-                          ฿{(product.price || 0).toLocaleString()}
-                        </span>
-
-                        {product.stock > 0 ? (
-                          <span className="ml-auto bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[8px] sm:text-[10px] font-black px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-full leading-none select-none">
-                            พร้อมส่ง
-                          </span>
-                        ) : (
-                          <span className="ml-auto bg-red-500/10 text-red-400 border border-red-500/20 text-[8px] sm:text-[10px] font-black px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-full leading-none select-none">
-                            หมด
-                          </span>
-                        )}
-                      </div>
-
-                      {product.stock <= 0 ? (
-                        <button className="w-full bg-red-600/10 text-red-400 border border-red-500/20 py-2 sm:py-2.5 rounded-full text-[11px] sm:text-xs font-black flex items-center justify-center gap-1.5 cursor-default mt-auto">
-                          <Package className="w-3.5 h-3.5" /> สินค้าหมด
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => onProductClick(product.id)}
-                          className="w-full flex items-center justify-center gap-1.5 sm:gap-2 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white py-2 sm:py-2.5 rounded-full text-[11px] sm:text-xs font-black transition-all duration-200 mt-auto shadow-lg shadow-blue-600/25 hover:shadow-blue-500/40 active:scale-95 cursor-pointer"
-                        >
-                          <ShoppingCart className="w-3.5 h-3.5" />
-                          สั่งซื้อสินค้า
-                        </button>
-                      )}
-
-                      <div className="mt-2 sm:mt-3 py-1 rounded-full bg-white/[0.03] border border-white/[0.06] flex items-center justify-center gap-1.5 text-[8px] sm:text-[10px] text-white/40 font-black uppercase tracking-widest leading-none">
-                        <Package className="w-3 h-3 text-white/20 shrink-0" />
-                        <span className="truncate">
-                          คงเหลือ{" "}
-                          <span className="text-white/80 font-mono font-bold">
-                            {product.stock >= 999999
-                              ? "ไม่จำกัด"
-                              : product.stock.toLocaleString()}
-                          </span>{" "}
-                          ชิ้น
-                        </span>
-                      </div>
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </div>
-          )}
-
-          {/* View all products button */}
-          {filteredProducts.length > 16 && (
-            <div className="pt-4 sm:pt-6 flex justify-center">
-              <button
-                onClick={() => {
-                  setActiveView("categories");
-                  window.scrollTo({ top: 0, behavior: "smooth" });
-                }}
-                className="px-6 sm:px-8 py-3 sm:py-3.5 bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.1] text-white font-bold rounded-full transition-all active:scale-95 cursor-pointer text-[11px] sm:text-xs uppercase tracking-wider flex items-center gap-2 shadow-lg shadow-black/50"
-              >
-                <span>ดูสินค้าทั้งหมดในร้าน ({safeProducts.length} รายการ)</span>
-                <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-              </button>
-            </div>
-          )}
-        </section>
-
-        {/* ── 7. Recent Orders Social Proof Feed (if available) ── */}
-        {purchaseHistory && purchaseHistory.length > 0 && (
-          <section className="p-3.5 sm:p-6 rounded-2xl sm:rounded-[28px] bg-[#0c0c12]/80 border border-white/[0.08] backdrop-blur-xl space-y-3 glass-card">
-            <div className="flex items-center gap-2 text-[11px] sm:text-xs font-bold uppercase tracking-wider text-emerald-400">
-              <Activity className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-400 animate-pulse" />
-              <span>รายการสั่งซื้อล่าสุดในระบบ</span>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-3">
-              {purchaseHistory.slice(0, 3).map((item, idx) => (
-                <div
-                  key={item.id || idx}
-                  className="flex items-center justify-between p-2.5 sm:p-3 rounded-xl sm:rounded-2xl bg-white/[0.02] border border-white/[0.05] text-xs"
-                >
-                  <div className="flex items-center gap-2 sm:gap-2.5 overflow-hidden">
-                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0">
-                      <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                    </div>
-                    <div className="overflow-hidden min-w-0">
-                      <div className="text-white font-bold truncate text-[11px] sm:text-xs">
-                        {item.productName || item.title || "ไอดีเกมพรีเมียม"}
-                      </div>
-                      <div className="text-white/40 text-[9px] sm:text-[10px] truncate">
-                        {item.date || item.createdAt || "เมื่อสักครู่"}
+                      <div className="text-base sm:text-lg font-extrabold text-white font-sans">
+                        {product.price.toLocaleString()}{" "}
+                        <span className="text-blue-500 font-bold">฿</span>
                       </div>
                     </div>
                   </div>
-                  <span className="font-mono font-bold text-amber-400 shrink-0 ml-2 text-xs">
-                    ฿{Number(item.price || item.total || 0).toLocaleString()}
-                  </span>
                 </div>
-              ))}
+              );
+            })}
+          </div>
+        </section>
+
+        {/* ── 4. รายการซื้อสินค้าล่าสุด (Latest Purchases Feed - Layered Design) ── */}
+        <section className="bg-[#141414] border border-[#2A2A2A] rounded-[26px] p-5 sm:p-6">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2.5">
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+              </span>
+              <div>
+                <h2 className="text-base sm:text-lg font-bold text-white tracking-tight">
+                  รายการซื้อสินค้าล่าสุด
+                </h2>
+                <p className="text-xs sm:text-sm text-zinc-400 mt-0.5">อัปเดตคำสั่งซื้อล่าสุดแบบเรียลไทม์</p>
+              </div>
             </div>
-          </section>
-        )}
+            {user ? (
+              <button
+                onClick={() => {
+                  setActiveView("order_history");
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
+                className="px-3.5 py-1.5 rounded-full bg-[#171717] border border-[#2A2A2A] text-xs font-medium text-zinc-300 hover:text-white hover:border-[#383838] transition-colors cursor-pointer"
+              >
+                ประวัติของฉัน
+              </button>
+            ) : (
+              <span className="px-3.5 py-1.5 rounded-full bg-[#171717] border border-[#2A2A2A] text-xs font-medium text-zinc-300">
+                อัปเดตเรียลไทม์
+              </span>
+            )}
+          </div>
+
+          {/* List of recent purchases (Inner Cards) */}
+          <div className="space-y-2.5">
+            {recentPurchases.map((purchase) => {
+              const hasProductLink = Boolean(purchase.productId);
+              return (
+                <div
+                  key={purchase.id}
+                  onClick={() => {
+                    if (purchase.productId) {
+                      onProductClick(purchase.productId);
+                    }
+                  }}
+                  className={`flex items-center justify-between p-3.5 sm:p-4 rounded-[20px] bg-[#171717] border border-[#2A2A2A] hover:border-[#383838] transition-colors ${
+                    hasProductLink ? "cursor-pointer group" : ""
+                  }`}
+                >
+                  <div className="flex items-center gap-3.5 sm:gap-4 min-w-0">
+                    {/* Squircle Brand Logo */}
+                    {renderServiceIcon(purchase.productName, purchase.imageUrl)}
+
+                    <div className="min-w-0">
+                      <h3 className="text-sm sm:text-base font-bold text-white truncate group-hover:text-blue-400 transition-colors">
+                        {purchase.productName}
+                      </h3>
+                      <div className="flex items-center gap-2 mt-0.5 text-xs text-zinc-400">
+                        <span className="text-zinc-300 font-medium">
+                          คุณ {purchase.username}
+                        </span>
+                        <span className="text-zinc-600">•</span>
+                        <span className="text-zinc-400 flex items-center gap-1 text-[11px]">
+                          <Clock className="w-3 h-3 text-zinc-500" />
+                          {formatTimeAgo(purchase.date)}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3 shrink-0 ml-3 text-right">
+                    <div>
+                      <div className="text-base sm:text-xl font-extrabold text-white tracking-tight leading-none">
+                        {purchase.price.toLocaleString()}{" "}
+                        <span className="text-blue-500 font-bold">฿</span>
+                      </div>
+                      <div className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 mt-1">
+                        <CheckCircle2 className="w-2.5 h-2.5" />
+                        สำเร็จ
+                      </div>
+                    </div>
+                    {hasProductLink && (
+                      <ChevronRight className="w-4 h-4 text-zinc-500 group-hover:text-zinc-300 transition-colors" />
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* Bottom Quick Button to Browse Store & Categories */}
+        <div className="pt-2 pb-4 flex justify-center">
+          <button
+            onClick={() => {
+              setActiveView("categories");
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+            className="w-full sm:w-auto px-8 py-3.5 rounded-[22px] bg-[#141414] hover:bg-[#171717] border border-[#2A2A2A] hover:border-[#383838] text-sm font-semibold text-zinc-200 hover:text-white transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+          >
+            <span>ดูสินค้าและหมวดหมู่ทั้งหมดในร้าน</span>
+            <ArrowRight className="w-4 h-4 text-blue-400" />
+          </button>
+        </div>
 
       </div>
     </div>

@@ -699,7 +699,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   }, []);
 
   const [siteSettings, setSiteSettings] = useState({ 
-    site_name: 'DEV',
+    site_name: 'Zenone',
     truewallet_phone: '',
     contact_line: 'https://www.facebook.com/share/18emwBsqUf/?mibextid=wwXIfr',
     discord_link: '',
@@ -716,7 +716,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     auto_proxy: true,
     spotify_url: '',
     spotify_autoplay: false,
-    announcement_text: 'ยินดีต้อนรับสู่ DEV ศูนย์รวมสินค้าไอดีและข้อเสนอยอดฮิต ระบบซื้อขายทำงานอัตโนมัติ 24 ชั่วโมง - กรณีมีปัญหาโปรดติดต่อแอดมิน'
+    announcement_text: 'ยินดีต้อนรับสู่ Zenone ศูนย์รวมสินค้าไอดีและบริการดิจิทัลชั้นนำ ระบบซื้อขายทำงานอัตโนมัติ 24 ชั่วโมง - กรณีมีปัญหาโปรดติดต่อแอดมิน'
   });
 
   const [uploadingMusic, setUploadingMusic] = useState(false);

@@ -249,8 +249,8 @@ export const WalletView: React.FC<WalletViewProps> = ({ userPlan, setUserPlan, o
               </div>
 
               {/* Current balance chip */}
-              <div className="bg-[#0c0c12]/85 border border-white/[0.1] px-5 py-3 rounded-2xl flex items-center gap-3 glass-card glass-reflection">
-                <span className="text-xs font-bold text-white/40 uppercase tracking-wider">ยอดเงินปัจจุบัน</span>
+              <div className="bg-[#141414] border border-[#2A2A2A] px-5 py-3 rounded-[20px] flex items-center gap-3">
+                <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider">ยอดเงินปัจจุบัน</span>
                 <span className="text-xl sm:text-2xl font-black font-mono text-emerald-400">
                   ฿{(userPlan?.balance || 0).toLocaleString()}
                 </span>
@@ -266,22 +266,19 @@ export const WalletView: React.FC<WalletViewProps> = ({ userPlan, setUserPlan, o
                 transition={{ duration: 0.4, delay: 0.05 }}
                 whileHover={{ y: -5 }}
                 whileTap={{ scale: 0.98 }}
-                className="bg-[#0c0c12]/85 backdrop-blur-2xl border border-white/[0.08] hover:border-orange-500/30 p-8 sm:p-10 rounded-[32px] flex flex-col items-center text-center transition-all group relative overflow-hidden cursor-pointer shadow-2xl glass-card glass-reflection"
+                className="bg-[#141414] border border-[#2A2A2A] hover:border-[#383838] p-8 sm:p-10 rounded-[26px] flex flex-col items-center text-center transition-all group relative overflow-hidden cursor-pointer"
                 onClick={() => setActiveView('truemoney')}
               >
-                {/* Prismatic Top Edge */}
-                <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-orange-400/30 to-transparent pointer-events-none" />
-
-                <div className="w-20 h-20 sm:w-24 sm:h-24 mb-6 transition-transform duration-500 group-hover:scale-110 flex items-center justify-center rounded-3xl bg-gradient-to-br from-orange-500 to-amber-600 shadow-xl shadow-orange-500/25 text-white">
-                  <Gift className="w-10 h-10 sm:w-12 sm:h-12" />
+                <div className="w-20 h-20 sm:w-24 sm:h-24 mb-6 transition-transform duration-500 group-hover:scale-105 flex items-center justify-center rounded-[22px] bg-white text-zinc-950">
+                  <Gift className="w-10 h-10 sm:w-12 sm:h-12 text-zinc-950" strokeWidth={2.2} />
                 </div>
-                <h2 className="text-xl sm:text-2xl font-black text-white mb-2 group-hover:text-orange-400 transition-colors">
+                <h2 className="text-xl sm:text-2xl font-bold text-white mb-2 group-hover:text-blue-400 transition-colors">
                   TrueMoney (ซองของขวัญ)
                 </h2>
-                <p className="text-white/50 text-xs sm:text-sm mb-6 leading-relaxed px-2 font-medium">
+                <p className="text-zinc-400 text-xs sm:text-sm mb-6 leading-relaxed px-2 font-medium">
                   เติมเงินผ่านลิงก์ซองของขวัญ TrueMoney Wallet สะดวก รวดเร็ว ตรวจสอบยอดเงินอัตโนมัติทันที
                 </p>
-                <div className="mt-auto px-5 py-2 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs text-orange-400 font-mono font-bold uppercase tracking-wider group-hover:bg-orange-500/10 group-hover:border-orange-500/30 transition-all shadow-sm">
+                <div className="mt-auto px-5 py-2 rounded-full bg-[#171717] border border-[#2A2A2A] text-xs text-zinc-300 font-mono font-bold uppercase tracking-wider group-hover:text-white transition-all">
                   GIFT LINK TOPUP
                 </div>
               </motion.div>
@@ -293,22 +290,19 @@ export const WalletView: React.FC<WalletViewProps> = ({ userPlan, setUserPlan, o
                 transition={{ duration: 0.4, delay: 0.1 }}
                 whileHover={{ y: -5 }}
                 whileTap={{ scale: 0.98 }}
-                className="bg-[#0c0c12]/85 backdrop-blur-2xl border border-white/[0.08] hover:border-emerald-500/30 p-8 sm:p-10 rounded-[32px] flex flex-col items-center text-center transition-all group relative overflow-hidden cursor-pointer shadow-2xl glass-card glass-reflection"
+                className="bg-[#141414] border border-[#2A2A2A] hover:border-[#383838] p-8 sm:p-10 rounded-[26px] flex flex-col items-center text-center transition-all group relative overflow-hidden cursor-pointer"
                 onClick={() => setActiveView('bank')}
               >
-                {/* Prismatic Top Edge */}
-                <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-emerald-400/30 to-transparent pointer-events-none" />
-
-                <div className="w-20 h-20 sm:w-24 sm:h-24 mb-6 transition-transform duration-500 group-hover:scale-110 flex items-center justify-center rounded-3xl bg-gradient-to-br from-emerald-600 to-teal-700 shadow-xl shadow-emerald-500/25 text-white">
-                  <Landmark className="w-10 h-10 sm:w-12 sm:h-12" />
+                <div className="w-20 h-20 sm:w-24 sm:h-24 mb-6 transition-transform duration-500 group-hover:scale-105 flex items-center justify-center rounded-[22px] bg-white text-zinc-950">
+                  <Landmark className="w-10 h-10 sm:w-12 sm:h-12 text-zinc-950" strokeWidth={2.2} />
                 </div>
-                <h2 className="text-xl sm:text-2xl font-black text-white mb-2 group-hover:text-emerald-400 transition-colors">
+                <h2 className="text-xl sm:text-2xl font-bold text-white mb-2 group-hover:text-blue-400 transition-colors">
                   โอนผ่านธนาคาร (สแกนสลิป)
                 </h2>
-                <p className="text-white/50 text-xs sm:text-sm mb-6 leading-relaxed px-2 font-medium">
+                <p className="text-zinc-400 text-xs sm:text-sm mb-6 leading-relaxed px-2 font-medium">
                   โอนเงินเข้าบัญชีธนาคารแล้วอัปโหลดสลิป ระบบตรวจสอบความถูกต้องและเติมเงินให้อัตโนมัติ
                 </p>
-                <div className="mt-auto px-5 py-2 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs text-emerald-400 font-mono font-bold uppercase tracking-wider group-hover:bg-emerald-500/10 group-hover:border-emerald-500/30 transition-all shadow-sm">
+                <div className="mt-auto px-5 py-2 rounded-full bg-[#171717] border border-[#2A2A2A] text-xs text-zinc-300 font-mono font-bold uppercase tracking-wider group-hover:text-white transition-all">
                   BANK SLIP SCANNER
                 </div>
               </motion.div>
@@ -322,14 +316,11 @@ export const WalletView: React.FC<WalletViewProps> = ({ userPlan, setUserPlan, o
             initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="max-w-xl mx-auto bg-[#0c0c12]/85 backdrop-blur-2xl border border-white/[0.1] p-6 sm:p-10 rounded-[32px] shadow-2xl relative glass-card glass-reflection"
+            className="max-w-xl mx-auto bg-[#141414] border border-[#2A2A2A] p-6 sm:p-10 rounded-[26px] relative"
           >
-            {/* Prismatic Edge */}
-            <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-orange-400/30 to-transparent pointer-events-none" />
-
             <button 
               onClick={() => setActiveView('main')}
-              className="mb-6 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.04] border border-white/[0.08] text-white/70 hover:text-white hover:bg-white/[0.08] transition-all font-bold text-xs cursor-pointer shadow-sm active:scale-95"
+              className="mb-6 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#171717] border border-[#2A2A2A] text-zinc-300 hover:text-white hover:bg-[#202020] transition-all font-bold text-xs cursor-pointer active:scale-95"
             >
               <ArrowLeft className="w-3.5 h-3.5 text-orange-400" /> ย้อนกลับ
             </button>

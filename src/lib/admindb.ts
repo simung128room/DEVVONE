@@ -149,11 +149,11 @@ const seedData: Record<string, any[]> = {
     {
       key: 'site',
       id: 'site',
-      site_name: 'DEV',
-      contact_line: '@dev',
+      site_name: 'Zenone',
+      contact_line: '@zenone',
       truewallet_phone: '0812345678',
       discord_link: 'https://discord.gg',
-      announcement_text: 'ยินดีต้อนรับสู่ระบบ Apex Store ระบบพร้อมให้บริการ',
+      announcement_text: 'ยินดีต้อนรับสู่ระบบ Zenone ระบบพร้อมให้บริการ',
       banners: [
         'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80',
         'https://images.unsplash.com/photo-1538481199705-c710c4e965fc?auto=format&fit=crop&w=1200&q=80'
@@ -167,8 +167,8 @@ const seedData: Record<string, any[]> = {
       key: 'payment',
       id: 'payment',
       promptpayNumber: '0812345678',
-      accountNameTh: 'เดฟ',
-      accountNameEn: 'DEV',
+      accountNameTh: 'เซนวัน',
+      accountNameEn: 'Zenone',
       truewalletPhone: '0812345678'
     }
   ],
@@ -178,9 +178,9 @@ const seedData: Record<string, any[]> = {
       slug: 'sys_site',
       title: 'sys_site',
       content: JSON.stringify({
-        site_name: 'DEV',
-        announcement_text: 'ระบบจำลอง Mock Mode ทำงานเต็มรูปแบบ พร้อมใช้งานทุกฟังก์ชัน',
-        contact_line: '@dev',
+        site_name: 'Zenone',
+        announcement_text: 'ระบบ Zenone ทำงานเต็มรูปแบบ พร้อมใช้งานทุกฟังก์ชัน',
+        contact_line: '@zenone',
         truewallet_phone: '0812345678',
         banners: [
           'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80'
@@ -192,9 +192,9 @@ const seedData: Record<string, any[]> = {
       slug: 'sys_site_dev',
       title: 'sys_site_dev',
       content: JSON.stringify({
-        site_name: 'DEV',
-        announcement_text: 'ระบบจำลอง Mock Mode ทำงานเต็มรูปแบบ',
-        contact_line: '@dev',
+        site_name: 'Zenone',
+        announcement_text: 'ระบบ Zenone ทำงานเต็มรูปแบบ',
+        contact_line: '@zenone',
         truewallet_phone: '0812345678'
       })
     }

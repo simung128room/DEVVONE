@@ -164,7 +164,7 @@ export const Footer: React.FC<FooterProps> = ({ setActiveView, siteSettings }) =
 
         {/* Bottom copyright & attribution */}
         <div className="pt-6 sm:pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 text-xs text-white/40 text-center sm:text-left">
-          <p>© {currentYear} DEV STORE. All rights reserved.</p>
+          <p>© {currentYear} Zenone. All rights reserved.</p>
           <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-[11px] sm:text-xs">
             <span>Fast Automated Delivery</span>
             <span>•</span>

@@ -62,7 +62,7 @@ const itemVariants: Variants = {
 
 export const AuthView: React.FC<AuthViewProps> = React.memo(
   ({ initialMode, setActiveView, siteSettings }) => {
-    const siteName = siteSettings?.site_name || "DEV";
+    const siteName = siteSettings?.site_name || "Zenone";
     const [authMode, setAuthMode] = useState<"login" | "signup" | "forgot">(
       initialMode
     );

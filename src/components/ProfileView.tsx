@@ -112,18 +112,15 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
   return (
     <AnimatedScroll direction="up" hideOnScroll={true}>
       <div className="font-sans px-4 pb-12 w-full max-w-5xl mx-auto">
-        {/* Main Glassmorphic Profile Card */}
+        {/* Main Profile Card */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-          className="relative overflow-hidden rounded-[32px] border border-white/[0.1] bg-[#0c0c12]/85 backdrop-blur-2xl shadow-[0_24px_60px_-15px_rgba(0,0,0,0.8),0_0_40px_rgba(59,130,246,0.08)] flex flex-col md:flex-row mt-6 glass-card glass-reflection"
+          className="relative overflow-hidden rounded-3xl border border-white/[0.08] bg-[#121316] shadow-xl flex flex-col md:flex-row mt-6"
         >
-          {/* Prismatic Top Edge Light */}
-          <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/25 to-transparent pointer-events-none z-20" />
-          
           {/* Left Side: Avatar & Wallet Status */}
-          <div className="md:w-1/3 bg-[#08080c]/60 p-6 sm:p-8 flex flex-col items-center border-b md:border-b-0 md:border-r border-white/[0.08] relative overflow-hidden">
+          <div className="md:w-1/3 bg-[#16171b] p-6 sm:p-8 flex flex-col items-center border-b md:border-b-0 md:border-r border-white/[0.08] relative overflow-hidden">
             <div className="absolute -top-12 -right-12 w-40 h-40 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
             
             <div className="w-24 h-24 p-1 mb-2 relative z-10 rounded-full overflow-hidden shadow-xl border border-white/20 bg-gradient-to-tr from-blue-600 to-cyan-400 group">
@@ -164,12 +161,12 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
             </span>
             
             {/* Wallet Box */}
-            <div className="w-full bg-white/[0.03] border border-white/[0.08] p-5 rounded-2xl flex flex-col items-center relative overflow-hidden shadow-inner">
+            <div className="w-full bg-[#1b1c20] border border-white/[0.05] p-5 rounded-2xl flex flex-col items-center relative overflow-hidden shadow-md">
               <div className="flex items-center gap-2 mb-1.5">
                 <Wallet className="w-4 h-4 text-blue-400" />
-                <span className="text-white/50 text-[10px] font-bold uppercase tracking-wider">ยอดเงินคงเหลือ</span>
+                <span className="text-zinc-400 text-[10px] font-bold uppercase tracking-wider">ยอดเงินคงเหลือ</span>
               </div>
-              <div className="text-3xl sm:text-4xl font-black text-white mb-3 tracking-tight font-mono select-none">
+              <div className="text-3xl sm:text-4xl font-extrabold text-white mb-3 tracking-tight font-mono select-none">
                 <span className="text-sm font-bold text-blue-400 mr-1 font-sans">฿</span>
                 {Math.floor(balance).toLocaleString()}
               </div>

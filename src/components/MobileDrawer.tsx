@@ -1,6 +1,19 @@
-import React, { useState, useEffect, useRef } from "react";
-import { ChevronDown } from "lucide-react";
+import React, { useEffect, useRef } from "react";
+import {
+  X,
+  Home,
+  ShoppingCart,
+  Wallet,
+  Gift,
+  History,
+  Phone,
+  ShieldCheck,
+  User,
+  LogOut,
+  ChevronRight,
+} from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
+import { DevLogo } from "./DevLogo";
 import { getAvatarUrl } from "../lib/avatar";
 
 export interface MobileDrawerProps {
@@ -30,13 +43,9 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
   isAdmin,
   onLogout,
   onOpenContact,
-  isUserMenuOpen,
-  setIsUserMenuOpen,
-  settingsImport,
   historyImport,
 }) => {
-  const [isShopExpanded, setIsShopExpanded] = useState(false);
-  const cardRef = useRef<HTMLDivElement>(null);
+  const drawerRef = useRef<HTMLDivElement>(null);
 
   // Close on Escape key
   useEffect(() => {
@@ -60,14 +69,18 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
     }
   }, [isOpen]);
 
-  const username = userPlan?.username || user?.email?.split("@")[0] || "ผู้ใช้งาน";
+  const username =
+    userPlan?.username || user?.name || user?.email?.split("@")[0] || "ผู้ใช้งาน";
   const avatarUrl =
     userPlan?.avatarUrl ||
     getAvatarUrl(
-      userPlan?.username || user?.email?.split("@")[0] || user?.id || "guest"
+      userPlan?.username || user?.name || user?.email?.split("@")[0] || user?.id || "guest"
     );
-  const balance = userPlan?.balance ? Math.floor(userPlan.balance) : 0;
-  const planLabel = isAdmin ? "ผู้ดูแลระบบ" : user ? "สมาชิกทั่วไป" : "ผู้เยี่ยมชม";
+  const balance = userPlan?.balance
+    ? Math.floor(userPlan.balance)
+    : user?.balance
+    ? Math.floor(user.balance)
+    : 0;
 
   const isShopActive =
     activeView === "categories" ||
@@ -84,53 +97,71 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
     activeView === "random_history" ||
     activeView === "wallet_history";
 
-  const userSubMenuItems = [
+  const navItems = [
     {
-      id: "profile",
-      label: "โปรไฟล์ของฉัน",
+      id: "home",
+      label: "หน้าแรก",
+      icon: Home,
+      isActive: activeView === "home",
       onClick: () => {
-        setActiveView("profile");
+        setActiveView("home");
         window.scrollTo({ top: 0, behavior: "smooth" });
         onClose();
       },
     },
     {
-      id: "settings",
-      label: "การตั้งค่าบัญชี",
+      id: "categories",
+      label: "ร้านค้า",
+      icon: ShoppingCart,
+      isActive: isShopActive,
       onClick: () => {
-        settingsImport?.();
-        setActiveView("settings");
+        setActiveView("categories");
         window.scrollTo({ top: 0, behavior: "smooth" });
         onClose();
       },
     },
     {
-      id: "order_history",
-      label: "ประวัติการสั่งซื้อ",
+      id: "wallet",
+      label: "เติมเงิน",
+      icon: Wallet,
+      isActive: activeView === "wallet",
+      badge: user ? `฿${balance.toLocaleString()}` : undefined,
+      onClick: () => {
+        setActiveView(user ? "wallet" : "login");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        onClose();
+      },
+    },
+    {
+      id: "redeem",
+      label: "สุ่มรางวัล",
+      icon: Gift,
+      isActive: activeView === "redeem",
+      onClick: () => {
+        setActiveView(user ? "redeem" : "login");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        onClose();
+      },
+    },
+    {
+      id: "history",
+      label: "ประวัติการซื้อ",
+      icon: History,
+      isActive: isHistoryActive,
       onClick: () => {
         historyImport?.();
-        setActiveView("order_history");
+        setActiveView(user ? "history" : "login");
         window.scrollTo({ top: 0, behavior: "smooth" });
         onClose();
       },
     },
     {
-      id: "wallet_history",
-      label: "ประวัติการเติมเงิน",
+      id: "contact",
+      label: "ติดต่อเรา",
+      icon: Phone,
+      isActive: false,
       onClick: () => {
-        historyImport?.();
-        setActiveView("wallet_history");
-        window.scrollTo({ top: 0, behavior: "smooth" });
-        onClose();
-      },
-    },
-    {
-      id: "random_history",
-      label: "ประวัติการสุ่มสินค้า",
-      onClick: () => {
-        historyImport?.();
-        setActiveView("random_history");
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        onOpenContact();
         onClose();
       },
     },
@@ -145,284 +176,187 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.16 }}
+            transition={{ duration: 0.25 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[68] cursor-pointer"
+            className="fixed inset-0 bg-black/60 backdrop-blur-md z-[68] cursor-pointer"
             aria-hidden="true"
           />
 
-          {/* Floating Menu Container: จัดวางให้พอดีกับแถบนำทางและทุกขนาดหน้าจอ */}
-          <div className="fixed top-[60px] sm:top-[66px] z-[69] pointer-events-none inset-x-3 sm:inset-x-auto sm:right-5 md:right-7 lg:right-10 w-auto sm:w-[360px] md:w-[380px] max-w-[calc(100vw-24px)] sm:max-w-[400px]">
-            <motion.div
-              ref={cardRef}
-              initial={{ opacity: 0, scale: 0.97, y: -8 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.97, y: -6 }}
-              transition={{
-                type: "spring",
-                damping: 28,
-                stiffness: 380,
-                mass: 0.7,
-              }}
-              className="pointer-events-auto flex flex-col gap-2 max-h-[calc(100dvh-76px)] sm:max-h-[calc(100dvh-84px)] overflow-y-auto overscroll-contain pb-2 custom-scrollbar focus:outline-none"
-            >
-              {/* 1. Main Navigation Card (แถบเมนูนำทาง - จัดวางพอดีตัว ไม่มีไอคอน) */}
-              <div className="relative w-full rounded-[28px] bg-[#101116]/95 backdrop-blur-2xl border border-white/[0.1] shadow-[0_20px_45px_-10px_rgba(0,0,0,0.9),0_6px_18px_-3px_rgba(0,0,0,0.8),inset_0_1px_0_0_rgba(255,255,255,0.12)] overflow-hidden p-3 sm:p-3.5 flex flex-col transition-all">
-                {/* Specular Light Bar */}
-                <div className="absolute top-0 inset-x-6 sm:inset-x-8 h-[1px] bg-gradient-to-r from-transparent via-white/25 to-transparent pointer-events-none" />
-
-                <nav className="flex flex-col gap-0.5">
-                  {/* หน้าแรก */}
-                  <button
-                    onClick={() => {
-                      setActiveView("home");
-                      window.scrollTo({ top: 0, behavior: "smooth" });
-                      onClose();
-                    }}
-                    className={`flex items-center justify-between w-full px-4 py-2.5 rounded-full text-left text-[14px] sm:text-[14.5px] font-medium transition-all cursor-pointer select-none active:scale-[0.99] min-h-[42px] ${
-                      activeView === "home"
-                        ? "bg-white/[0.1] text-white shadow-sm"
-                        : "text-zinc-300 hover:text-white hover:bg-white/[0.05]"
-                    }`}
-                  >
-                    <span>หน้าแรก</span>
-                  </button>
-
-                  {/* ร้านค้า */}
-                  <div>
-                    <button
-                      onClick={() => setIsShopExpanded(!isShopExpanded)}
-                      className={`flex items-center justify-between w-full px-4 py-2.5 rounded-full text-left text-[14px] sm:text-[14.5px] font-medium transition-all cursor-pointer select-none active:scale-[0.99] min-h-[42px] ${
-                        isShopActive
-                          ? "bg-white/[0.1] text-white shadow-sm"
-                          : "text-zinc-300 hover:text-white hover:bg-white/[0.05]"
-                      }`}
-                      aria-expanded={isShopExpanded}
-                    >
-                      <span>ร้านค้า</span>
-                      <motion.div
-                        animate={{ rotate: isShopExpanded ? 180 : 0 }}
-                        transition={{ duration: 0.18 }}
-                      >
-                        <ChevronDown className="w-4 h-4 text-zinc-400" />
-                      </motion.div>
-                    </button>
-
-                    <AnimatePresence>
-                      {isShopExpanded && (
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: "auto" }}
-                          exit={{ opacity: 0, height: 0 }}
-                          transition={{ duration: 0.18 }}
-                          className="overflow-hidden pl-3 pr-1 py-1 flex flex-col gap-1 border-l border-white/[0.08] ml-3 my-1"
-                        >
-                          <button
-                            onClick={() => {
-                              setActiveView("categories");
-                              window.scrollTo({ top: 0, behavior: "smooth" });
-                              onClose();
-                            }}
-                            className="text-left px-3.5 py-2 rounded-full text-[13px] text-zinc-400 hover:text-white hover:bg-white/[0.05] transition-colors cursor-pointer min-h-[36px] flex items-center"
-                          >
-                            หมวดหมู่สินค้าทั้งหมด
-                          </button>
-                          <button
-                            onClick={() => {
-                              setActiveView("categories");
-                              window.scrollTo({ top: 0, behavior: "smooth" });
-                              onClose();
-                            }}
-                            className="text-left px-3.5 py-2 rounded-full text-[13px] text-zinc-400 hover:text-white hover:bg-white/[0.05] transition-colors cursor-pointer min-h-[36px] flex items-center"
-                          >
-                            บัตรเติมเงิน & แพ็กเกจเกม
-                          </button>
-                          <button
-                            onClick={() => {
-                              setActiveView("categories");
-                              window.scrollTo({ top: 0, behavior: "smooth" });
-                              onClose();
-                            }}
-                            className="text-left px-3.5 py-2 rounded-full text-[13px] text-zinc-400 hover:text-white hover:bg-white/[0.05] transition-colors cursor-pointer min-h-[36px] flex items-center"
-                          >
-                            ไอดีเกม & รหัสสุ่มพรีเมียม
-                          </button>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-
-                  {/* เติมเงิน */}
-                  <button
-                    onClick={() => {
-                      setActiveView(user ? "wallet" : "login");
-                      window.scrollTo({ top: 0, behavior: "smooth" });
-                      onClose();
-                    }}
-                    className={`flex items-center justify-between w-full px-4 py-2.5 rounded-full text-left text-[14px] sm:text-[14.5px] font-medium transition-all cursor-pointer select-none active:scale-[0.99] min-h-[42px] ${
-                      activeView === "wallet"
-                        ? "bg-white/[0.1] text-white shadow-sm"
-                        : "text-zinc-300 hover:text-white hover:bg-white/[0.05]"
-                    }`}
-                  >
-                    <span>เติมเงิน</span>
-                  </button>
-
-                  {/* ประวัติ (ไม่มีไอคอน) */}
-                  <button
-                    onClick={() => {
-                      setActiveView(user ? "log_categories" : "login");
-                      window.scrollTo({ top: 0, behavior: "smooth" });
-                      onClose();
-                    }}
-                    className={`flex items-center justify-between w-full px-4 py-2.5 rounded-full text-left text-[14px] sm:text-[14.5px] font-medium transition-all cursor-pointer select-none active:scale-[0.99] min-h-[42px] ${
-                      isHistoryActive
-                        ? "bg-white/[0.1] text-white shadow-sm"
-                        : "text-zinc-300 hover:text-white hover:bg-white/[0.05]"
-                    }`}
-                  >
-                    <span>ประวัติ</span>
-                  </button>
-
-                  {/* ติดต่อเรา */}
-                  <button
-                    onClick={() => {
-                      onOpenContact();
-                      onClose();
-                    }}
-                    className="flex items-center justify-between w-full px-4 py-2.5 rounded-full text-left text-[14px] sm:text-[14.5px] font-medium text-zinc-300 hover:text-white hover:bg-white/[0.05] transition-all cursor-pointer select-none active:scale-[0.99] min-h-[42px]"
-                  >
-                    <span>ติดต่อเรา</span>
-                  </button>
-
-                  {/* แอดมินระบบ (ไม่มีไอคอน) */}
-                  {isAdmin && (
-                    <button
-                      onClick={() => {
-                        setActiveView("admin");
-                        window.scrollTo({ top: 0, behavior: "smooth" });
-                        onClose();
-                      }}
-                      className={`flex items-center justify-between w-full px-4 py-2.5 rounded-full text-left text-[14px] sm:text-[14.5px] font-medium transition-all cursor-pointer select-none mt-0.5 active:scale-[0.99] min-h-[42px] ${
-                        activeView === "admin"
-                          ? "bg-neon-yellow/15 text-neon-yellow"
-                          : "text-neon-yellow/85 hover:bg-neon-yellow/10"
-                      }`}
-                    >
-                      <span>แอดมินระบบ</span>
-                    </button>
-                  )}
-                </nav>
+          {/* Minimalist Side Drawer: No harsh boxes, soft curved pill theme */}
+          <motion.div
+            ref={drawerRef}
+            initial={{ x: "100%", opacity: 0.5 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: "100%", opacity: 0 }}
+            transition={{
+              type: "spring",
+              damping: 32,
+              stiffness: 350,
+              mass: 0.75,
+            }}
+            className="fixed top-2 bottom-2 right-2 w-[86vw] max-w-[320px] z-[70] bg-[#0c0d16]/95 backdrop-blur-2xl border border-white/10 rounded-[36px] shadow-2xl flex flex-col justify-between select-none overflow-hidden"
+          >
+            {/* Top Bar inside Drawer: Logo & Rounded Close Button */}
+            <div className="p-5 flex items-center justify-between shrink-0">
+              <div
+                onClick={() => {
+                  setActiveView("home");
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                  onClose();
+                }}
+                className="flex items-center cursor-pointer hover:opacity-90 transition-opacity"
+              >
+                <DevLogo className="h-10 w-auto text-white" />
               </div>
 
-              {/* 2. User Account / Login Card (ใส่แทนอันล่าง - พอดีแถบ ไม่มีไอคอน) */}
-              <div className="w-full rounded-[28px] bg-[#101116]/95 backdrop-blur-2xl border border-white/[0.1] shadow-xl p-3.5 flex flex-col transition-all">
-                {user ? (
-                  /* User Profile Details & Actions */
-                  <div className="flex flex-col gap-1">
-                    <div
-                      onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                      className="flex items-center justify-between p-2 rounded-full hover:bg-white/[0.05] transition-colors cursor-pointer select-none group min-h-[42px]"
-                    >
-                      <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                        <div className="w-9 h-9 rounded-full overflow-hidden bg-zinc-800 shrink-0 border border-white/10 flex items-center justify-center">
-                          <img
-                            src={avatarUrl}
-                            alt={username}
-                            className="w-full h-full object-cover"
-                            referrerPolicy="no-referrer"
-                          />
-                        </div>
-                        <div className="flex flex-col min-w-0">
-                          <span className="text-[14px] font-semibold text-white truncate">
-                            {username}
-                          </span>
-                          <span className="text-[12px] text-zinc-400 truncate">
-                            ยอดเงิน ฿{balance.toLocaleString()} • {planLabel}
-                          </span>
-                        </div>
+              <button
+                onClick={onClose}
+                className="w-10 h-10 rounded-full flex items-center justify-center text-zinc-400 hover:text-white bg-white/[0.06] hover:bg-white/10 transition-colors cursor-pointer"
+                aria-label="Close menu"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Middle: Clean Fluid Pill Menu Links */}
+            <div className="flex-1 overflow-y-auto overscroll-contain px-4 py-2 space-y-2 custom-scrollbar">
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={item.onClick}
+                    className={`flex items-center justify-between w-full px-5 py-3 rounded-full text-sm font-semibold transition-all duration-200 cursor-pointer ${
+                      item.isActive
+                        ? "bg-white text-black font-bold shadow-lg shadow-white/15 scale-[1.02]"
+                        : "text-zinc-300 hover:text-white hover:bg-white/[0.08]"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3.5">
+                      <Icon
+                        className={`w-4 h-4 ${
+                          item.isActive ? "text-black" : "text-zinc-400"
+                        }`}
+                      />
+                      <span>{item.label}</span>
+                    </div>
+
+                    {item.badge ? (
+                      <span
+                        className={`text-[11px] font-mono font-bold px-2.5 py-0.5 rounded-full ${
+                          item.isActive
+                            ? "bg-black/15 text-black"
+                            : "bg-emerald-500/15 text-emerald-400 border border-emerald-500/25"
+                        }`}
+                      >
+                        {item.badge}
+                      </span>
+                    ) : (
+                      <ChevronRight
+                        className={`w-4 h-4 opacity-40 ${
+                          item.isActive ? "text-black" : "text-white"
+                        }`}
+                      />
+                    )}
+                  </button>
+                );
+              })}
+
+              {/* Admin Button */}
+              {isAdmin && (
+                <button
+                  onClick={() => {
+                    setActiveView("admin");
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                    onClose();
+                  }}
+                  className={`flex items-center justify-between w-full px-5 py-3 rounded-full text-sm font-bold transition-all duration-200 cursor-pointer mt-2 ${
+                    activeView === "admin"
+                      ? "bg-amber-400 text-black shadow-lg shadow-amber-400/20"
+                      : "text-amber-400 hover:bg-amber-400/10"
+                  }`}
+                >
+                  <div className="flex items-center gap-3.5">
+                    <ShieldCheck className="w-4 h-4" />
+                    <span>จัดการระบบ</span>
+                  </div>
+                  <ChevronRight className="w-4 h-4 opacity-60" />
+                </button>
+              )}
+            </div>
+
+            {/* Bottom: Minimalist Pill User Profile or Login */}
+            <div className="p-4 pt-3 shrink-0">
+              {user ? (
+                <div className="space-y-2">
+                  <div
+                    onClick={() => {
+                      setActiveView("profile");
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                      onClose();
+                    }}
+                    className="flex items-center justify-between p-3 px-4 rounded-full bg-white/[0.05] hover:bg-white/[0.09] transition-colors cursor-pointer"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <img
+                        src={avatarUrl}
+                        alt={username}
+                        className="w-9 h-9 rounded-full object-cover border border-white/20 shrink-0"
+                        referrerPolicy="no-referrer"
+                      />
+                      <div className="flex flex-col min-w-0">
+                        <span className="text-xs font-bold text-white truncate">
+                          {username}
+                        </span>
+                        <span className="text-[11px] font-mono text-emerald-400 font-bold truncate">
+                          ฿{balance.toLocaleString()}
+                        </span>
                       </div>
-                      <motion.div
-                        animate={{ rotate: isUserMenuOpen ? 180 : 0 }}
-                        transition={{ duration: 0.18 }}
-                        className="text-zinc-400 group-hover:text-white p-1"
-                      >
-                        <ChevronDown className="w-4 h-4" />
-                      </motion.div>
                     </div>
+                    <User className="w-4 h-4 text-zinc-400" />
+                  </div>
 
-                    {/* Expandable User Account Links (ไม่มีไอคอน) */}
-                    <AnimatePresence>
-                      {isUserMenuOpen && (
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: "auto" }}
-                          exit={{ opacity: 0, height: 0 }}
-                          transition={{ duration: 0.2 }}
-                          className="overflow-hidden pl-3 pr-1 py-1 flex flex-col gap-0.5 border-l border-white/[0.08] ml-4 mt-1"
-                        >
-                          {userSubMenuItems.map((item) => (
-                            <button
-                              key={item.id}
-                              onClick={item.onClick}
-                              className="text-left px-3.5 py-2 rounded-full text-[13px] text-zinc-400 hover:text-white hover:bg-white/[0.05] transition-colors cursor-pointer min-h-[34px] flex items-center"
-                            >
-                              <span>{item.label}</span>
-                            </button>
-                          ))}
-                          <button
-                            onClick={() => {
-                              onLogout();
-                              onClose();
-                            }}
-                            className="text-left px-3.5 py-2 rounded-full text-[13px] text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition-colors cursor-pointer min-h-[34px] flex items-center mt-0.5"
-                          >
-                            <span>ออกจากระบบ</span>
-                          </button>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                ) : (
-                  /* Guest Login / Sign Up Card (จัดวางพอดีตัว ไม่มีไอคอน) */
-                  <div className="flex flex-col gap-2 p-1">
-                    <div className="flex flex-col px-1">
-                      <span className="text-[14px] font-semibold text-white">
-                        บัญชีผู้ใช้งาน
-                      </span>
-                      <span className="text-[12px] text-zinc-400 mt-0.5">
-                        เข้าสู่ระบบเพื่อจัดการคำสั่งซื้อและยอดเงินของคุณ
-                      </span>
-                    </div>
-                    <div className="grid grid-cols-2 gap-2 mt-1">
-                      <button
-                        onClick={() => {
-                          setActiveView("login");
-                          window.scrollTo({ top: 0, behavior: "smooth" });
-                          onClose();
-                        }}
-                        className="flex items-center justify-center bg-white text-black hover:bg-zinc-200 py-2 px-3.5 rounded-full text-[13.5px] font-semibold transition-colors cursor-pointer shadow min-h-[40px] active:scale-[0.98]"
-                      >
-                        <span>เข้าสู่ระบบ</span>
-                      </button>
-                      <button
-                        onClick={() => {
-                          setActiveView("signup");
-                          window.scrollTo({ top: 0, behavior: "smooth" });
-                          onClose();
-                        }}
-                        className="flex items-center justify-center bg-white/[0.06] hover:bg-white/[0.12] border border-white/[0.1] text-white py-2 px-3.5 rounded-full text-[13.5px] font-medium transition-colors cursor-pointer min-h-[40px] active:scale-[0.98]"
-                      >
-                        <span>สมัครสมาชิก</span>
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </motion.div>
-          </div>
+                  <button
+                    onClick={() => {
+                      onLogout();
+                      onClose();
+                    }}
+                    className="w-full flex items-center justify-center gap-2 py-2.5 rounded-full text-xs font-semibold text-rose-400 hover:text-rose-300 bg-rose-500/10 hover:bg-rose-500/20 transition-colors cursor-pointer"
+                  >
+                    <LogOut className="w-3.5 h-3.5" />
+                    <span>ออกจากระบบ</span>
+                  </button>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => {
+                      setActiveView("login");
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                      onClose();
+                    }}
+                    className="flex-1 py-3 rounded-full text-xs font-bold text-zinc-300 hover:text-white bg-white/[0.06] hover:bg-white/10 transition-colors cursor-pointer text-center"
+                  >
+                    เข้าสู่ระบบ
+                  </button>
+                  <button
+                    onClick={() => {
+                      setActiveView("signup");
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                      onClose();
+                    }}
+                    className="flex-1 py-3 rounded-full text-xs font-bold bg-white text-black hover:bg-zinc-200 transition-colors cursor-pointer text-center shadow-lg shadow-white/10"
+                  >
+                    สมัครสมาชิก
+                  </button>
+                </div>
+              )}
+            </div>
+          </motion.div>
         </>
       )}
     </AnimatePresence>
   );
 };
+
+export default MobileDrawer;

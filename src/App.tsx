@@ -114,8 +114,7 @@ axios.interceptors.response.use(
   }
 );
 
-import jsQR from "jsqr";
-
+// Remove unused jsQR import to save bundle size
 type SupabaseUser = any;
 import { Turnstile } from "@marsidev/react-turnstile";
 import { Analytics } from "@vercel/analytics/react";
@@ -133,19 +132,30 @@ import { getUserRank } from "./lib/rank";
 
 import { DevLogo } from "./components/DevLogo";
 import { AppLoader } from "./components/AppLoader";
-import { ProfileView } from "./components/ProfileView";
-import { CategoriesView } from "./components/CategoriesView";
-import { AuthView } from "./components/AuthView";
 import { HomeView } from "./components/HomeView";
-import { ProductDetailView } from "./components/ProductDetailView";
-import { CategoryProductsView } from "./components/CategoryProductsView";
-import { SearchView } from "./components/SearchView";
-import { UserNavMenu } from "./components/UserNavMenu";
 import { HeaderNavbar } from "./components/HeaderNavbar";
 import { MobileDrawer } from "./components/MobileDrawer";
-import { Aurora } from "./components/design/Aurora";
-import { GlassmorphismNav } from "./components/design/GlassmorphismNav";
 import { Footer as DesignFooter } from "./components/design/Footer";
+
+// Lazy-load secondary views to keep initial bundle size well under 500KB
+const ProfileView = lazy(() =>
+  import("./components/ProfileView").then((m) => ({ default: m.ProfileView }))
+);
+const CategoriesView = lazy(() =>
+  import("./components/CategoriesView").then((m) => ({ default: m.CategoriesView }))
+);
+const AuthView = lazy(() =>
+  import("./components/AuthView").then((m) => ({ default: m.AuthView }))
+);
+const ProductDetailView = lazy(() =>
+  import("./components/ProductDetailView").then((m) => ({ default: m.ProductDetailView }))
+);
+const CategoryProductsView = lazy(() =>
+  import("./components/CategoryProductsView").then((m) => ({ default: m.CategoryProductsView }))
+);
+const SearchView = lazy(() =>
+  import("./components/SearchView").then((m) => ({ default: m.SearchView }))
+);
 
 const AdminDashboard = lazy(() =>
   import("./components/AdminDashboard").then((module) => ({
@@ -301,13 +311,13 @@ function AppContent() {
   const [userPlan, setUserPlan] = useState<UserPlan | null>(null);
   const [siteSettings, setSiteSettings] = useState(() => {
     const defaultSettings = {
-      site_name: "DEV",
+      site_name: "Zenone",
       truewallet_phone: "",
       contact_line: "https://www.facebook.com/share/18emwBsqUf/?mibextid=wwXIfr",
       discord_link: "",
       facebook_link: "",
       instagram_link: "",
-      contact_email: "support.apexstoreth@gmail.com",
+      contact_email: "support@zenone.com",
       popup_enabled: false,
       popup_img_url: "",
       popup_link: "",
@@ -315,11 +325,18 @@ function AppContent() {
       stats_sales_offset: 0,
       spotify_url: "https://youtu.be/WczSfh3gJaU?si=PI1i4X0p0FGbdEfq",
       spotify_autoplay: true,
-      announcement_text: "ยินดีต้อนรับสู่ DEV ศูนย์รวมสินค้าไอดีและข้อเสนอยอดฮิต ระบบซื้อขายทำงานอัตโนมัติ 24 ชั่วโมง - กรณีมีปัญหาโปรดติดต่อแอดมิน",
+      announcement_text: "ยินดีต้อนรับสู่ Zenone ศูนย์รวมสินค้าไอดีและบริการดิจิทัลชั้นนำ ระบบซื้อขายทำงานอัตโนมัติ 24 ชั่วโมง - กรณีมีปัญหาโปรดติดต่อแอดมิน",
     };
     try {
       const saved = localStorage.getItem("apex_settings_cache");
-      return saved ? JSON.parse(saved) : defaultSettings;
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (!parsed.site_name || parsed.site_name === "DEV" || parsed.site_name === "Apex Store") {
+          parsed.site_name = "Zenone";
+        }
+        return parsed;
+      }
+      return defaultSettings;
     } catch {
       return defaultSettings;
     }
@@ -2062,8 +2079,7 @@ function AppContent() {
     return <AppLoader progress={loadingProgress > 0 ? loadingProgress : undefined} />;
 
   return (
-    <div className="min-h-screen w-full bg-[#030303] text-white font-sans selection:bg-[#050505]/80 flex flex-col relative">
-      {useCustomCursor && <CustomCursor />}
+    <div className="min-h-screen w-full bg-[#0F0F0F] text-white font-sans selection:bg-blue-600 flex flex-col relative">
       <Suspense fallback={null}>
         <PopupBanner
           enabled={false}
@@ -2072,107 +2088,8 @@ function AppContent() {
         />
       </Suspense>
 
-      {/* Desktop Sidebar */}
-      <aside className="hidden">
-        <div className="mb-10 w-full flex justify-start">
-          <div 
-            className="flex items-center gap-1.5 flex-shrink-0 cursor-pointer hover:opacity-90 transition-all group select-none"
-            onClick={handleLogoClick}
-          >
-            <DevLogo className="h-9 w-auto text-white" />
-          </div>
-        </div>
-        <div className="flex-1 space-y-1">
-          <div className="flex items-center py-[8px] my-1">
-            <div className="flex-grow border-t border-border border-2"></div>
-            <span className="shrink-0 px-3 text-[10px] font-medium text-muted-foreground uppercase tracking-[0.2em]">เมนู</span>
-            <div className="flex-grow border-t border-border border-2"></div>
-          </div>
-          <button
-            onClick={() => setActiveView("home")}
-            className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium transition-all rounded-xl ${activeView === "home" ? "bg-[#121212] text-white border border-border border-2" : "text-zinc-500 hover:bg-[#0a0a0a] hover:text-white border-transparent"}`}
-          >
-            <Home className="w-[18px] h-[18px]" /> หน้าแรก
-          </button>
-          <button
-            onClick={() => {
-              setActiveView("categories");
-              window.scrollTo({ top: 0, behavior: "smooth" });
-            }}
-            className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium transition-all rounded-xl ${activeView === "categories" ? "bg-[#121212] text-white border border-border border-2" : "text-zinc-500 hover:bg-[#0a0a0a] hover:text-white border-transparent"}`}
-          >
-            <ShoppingCart className="w-[18px] h-[18px]" /> สินค้าทั้งหมด
-          </button>
-          <button
-            onClick={() => {
-              setActiveView(user ? "wallet" : "login");
-              window.scrollTo({ top: 0, behavior: "smooth" });
-            }}
-            className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium transition-all rounded-xl ${activeView === "wallet" ? "bg-[#121212] text-white border border-border border-2" : "text-zinc-500 hover:bg-[#0a0a0a] hover:text-white border-transparent"}`}
-          >
-            <Wallet className="w-[18px] h-[18px]" /> เติมเงิน
-          </button>
-          <button
-            onClick={() => {
-              setActiveView(user ? "history" : "login");
-              window.scrollTo({ top: 0, behavior: "smooth" });
-            }}
-            className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium transition-all rounded-xl ${activeView === "history" ? "bg-[#121212] text-white border border-border border-2" : "text-zinc-500 hover:bg-[#0a0a0a] hover:text-white border-transparent"}`}
-          >
-            <History className="w-[18px] h-[18px]" /> ประวัติสั่งซื้อ
-          </button>
-          <button
-            onClick={() => {
-              setShowContactUs(true);
-            }}
-            className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium transition-all text-muted-foreground hover:bg-[#0a0a0a] hover:text-white border border-transparent rounded-xl`}
-          >
-            <Phone className="w-[18px] h-[18px]" /> ติดต่อแอดมิน
-          </button>
-          {user && (
-            <button
-              onClick={handleLogout}
-              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium transition-all text-red-500 hover:bg-red-500/10 mt-2 border border-transparent rounded-xl"
-            >
-              <LogOut className="w-[18px] h-[18px]" /> ออกจากระบบ
-            </button>
-          )}
-
-          {user && customPages && customPages.length > 0 && (
-            <>
-              <div className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest mt-6 mb-3 pl-3">
-                หน้าอื่นๆ
-              </div>
-              {customPages.map((page) => (
-                <button
-                  key={page.id}
-                  onClick={() => {
-                    setSelectedPage(page);
-                    setActiveView("custom_page");
-                  }}
-                  className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium transition-all rounded-xl ${activeView === "custom_page" && selectedPage?.id === page.id ? "bg-[#121212] text-white border border-border border-2" : "text-zinc-500 hover:bg-[#0a0a0a] hover:text-white border-transparent"}`}
-                >
-                  <FileText className="w-[18px] h-[18px]" />{" "}
-                  {page.title.replace(/^#+\s*/, "")}
-                </button>
-              ))}
-            </>
-          )}
-        </div>
-      </aside>
-
-      {/* Target Design Aurora Ambient Glow */}
-      <div className="fixed inset-0 w-full h-full pointer-events-none z-0 overflow-hidden">
-        <Aurora
-          colorStops={["#334155", "#475569", "#1e293b"]}
-          amplitude={1.2}
-          blend={0.6}
-          speed={0.7}
-        />
-      </div>
-
-      {/* Floating Glassmorphism Navbar (Target Design) */}
-      <GlassmorphismNav
+      {/* Top Bar with Smooth Shrinking Animation on Scroll */}
+      <HeaderNavbar
         activeView={activeView}
         setActiveView={setActiveView}
         user={user}
@@ -2181,33 +2098,46 @@ function AppContent() {
         onLogout={handleLogout}
         onOpenSearch={() => setActiveView("search")}
         onOpenContact={() => setShowContactUs(true)}
+        isMobileMenuOpen={isMobileMenuOpen}
+        setIsMobileMenuOpen={setIsMobileMenuOpen}
+        isDesktopUserMenuOpen={isDesktopUserMenuOpen}
+        setIsDesktopUserMenuOpen={setIsDesktopUserMenuOpen}
+        isUserMenuOpen={isUserMenuOpen}
+        setIsUserMenuOpen={setIsUserMenuOpen}
+        settingsImport={settingsImport}
+        historyImport={historyImport}
+      />
+
+      {/* Mobile Drawer */}
+      <MobileDrawer
+        isOpen={isMobileMenuOpen}
+        onClose={() => setIsMobileMenuOpen(false)}
+        activeView={activeView}
+        setActiveView={(view) => {
+          setActiveView(view);
+          setIsMobileMenuOpen(false);
+        }}
+        user={user}
+        userPlan={userPlan}
+        isAdmin={isAdmin}
+        onLogout={handleLogout}
+        onOpenContact={() => {
+          setShowContactUs(true);
+          setIsMobileMenuOpen(false);
+        }}
+        isUserMenuOpen={isUserMenuOpen}
+        setIsUserMenuOpen={setIsUserMenuOpen}
+        settingsImport={settingsImport}
+        historyImport={historyImport}
+        onOpenSearch={() => {
+          setActiveView("search");
+          setIsMobileMenuOpen(false);
+        }}
       />
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-h-screen min-w-0 relative overflow-x-hidden">
-        {/* Global Page Header (Based on activeView) for Mobile */}
-        {activeView !== "home" && (
-          <div className="lg:hidden px-5 py-3.5 flex gap-3 items-center shrink-0 border-b border-white/[0.08] bg-[#0c0d12]/90 backdrop-blur-md">
-            <div>
-              <div className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest leading-none mb-1">
-                {activeView === "categories" ? "Main Shop" :
-                 activeView === "wallet" ? "Billing" :
-                 activeView === "profile" ? "Profile Info" :
-                 activeView === "history" ? "History" : "Activity"}
-              </div>
-              <div className="text-[18px] font-bold text-white leading-none">
-                {activeView === "categories" ? "สินค้าทั่วไป" :
-                 activeView === "category_products" ? "รายการสินค้า" :
-                 activeView === "wallet" ? "เติมเงิน" :
-                 activeView === "profile" ? "โปรไฟล์" :
-                 activeView === "history" ? "ประวัติ" :
-                 activeView === "admin" ? "ระบบหลังบ้าน" : ""}
-              </div>
-            </div>
-          </div>
-        )}
-
-        <div className="w-full flex-1 flex flex-col pt-20 sm:pt-24 lg:pt-28 pb-6">
+        <div className="w-full flex-1 flex flex-col pt-2 sm:pt-4 pb-8">
           <Suspense
             fallback={
               <div className="flex-1 w-full flex items-center justify-center min-h-[50vh]">
