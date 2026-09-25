@@ -211,8 +211,8 @@ export const HeaderNavbar: React.FC<HeaderNavbarProps> = ({
 
             {/* Profile Dropdown */}
             {user && dropdownOpen && (
-              <div className="absolute right-0 mt-2 w-56 bg-[#13151b] border border-white/10 rounded-2xl p-2 shadow-2xl z-50">
-                <div className="px-3 py-2 mb-1 border-b border-white/[0.06]">
+              <div className="absolute right-0 mt-2 w-56 bg-[#141414] border border-[#2A2A2A] rounded-md p-2 shadow-2xl z-50">
+                <div className="px-3 py-2 mb-1 border-b border-[#2A2A2A]">
                   <p className="text-[11px] text-zinc-500 font-medium">เข้าสู่ระบบในชื่อ</p>
                   <p className="text-xs font-bold text-white truncate">
                     {userPlan?.username || user.name || user.email}
@@ -230,7 +230,7 @@ export const HeaderNavbar: React.FC<HeaderNavbarProps> = ({
                     setActiveView("profile");
                     setDropdownOpen(false);
                   }}
-                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-zinc-300 hover:text-white hover:bg-white/[0.06] transition-colors text-left cursor-pointer"
+                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-sm text-xs text-zinc-300 hover:text-white hover:bg-white/[0.06] transition-colors text-left cursor-pointer"
                 >
                   <User className="w-3.5 h-3.5 text-zinc-400" />
                   <span>ข้อมูลส่วนตัว</span>
@@ -241,7 +241,7 @@ export const HeaderNavbar: React.FC<HeaderNavbarProps> = ({
                     setActiveView("wallet");
                     setDropdownOpen(false);
                   }}
-                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-zinc-300 hover:text-white hover:bg-white/[0.06] transition-colors text-left cursor-pointer"
+                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-sm text-xs text-zinc-300 hover:text-white hover:bg-white/[0.06] transition-colors text-left cursor-pointer"
                 >
                   <Wallet className="w-3.5 h-3.5 text-zinc-400" />
                   <span>เติมเงิน</span>
@@ -252,20 +252,20 @@ export const HeaderNavbar: React.FC<HeaderNavbarProps> = ({
                     setActiveView("history");
                     setDropdownOpen(false);
                   }}
-                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-zinc-300 hover:text-white hover:bg-white/[0.06] transition-colors text-left cursor-pointer"
+                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-sm text-xs text-zinc-300 hover:text-white hover:bg-white/[0.06] transition-colors text-left cursor-pointer"
                 >
                   <History className="w-3.5 h-3.5 text-zinc-400" />
                   <span>ประวัติการสั่งซื้อ</span>
                 </button>
 
-                <div className="my-1 border-t border-white/[0.06]" />
+                <div className="my-1 border-t border-[#2A2A2A]" />
 
                 <button
                   onClick={() => {
                     setDropdownOpen(false);
                     onLogout();
                   }}
-                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition-colors text-left cursor-pointer font-medium"
+                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition-colors text-left cursor-pointer font-medium"
                 >
                   <LogOut className="w-3.5 h-3.5" />
                   <span>ออกจากระบบ</span>

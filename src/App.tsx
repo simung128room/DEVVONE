@@ -208,10 +208,6 @@ const LogCategoriesView = lazy(() =>
 
 import { CustomCursor } from "./components/CustomCursor";
 
-var TextPaint = `▒▄▀▄▒█▀▄▒██▀░▀▄▀
-2
-░█▀█░█▀▒░█▄▄░█▒█`;
-
 enum OperationType {
   CREATE = "create",
   UPDATE = "update",
@@ -220,87 +216,6 @@ enum OperationType {
   GET = "get",
   WRITE = "write",
   AUTH = "auth",
-}
-
-function ElapsedTimeDisplay({
-  running,
-  startTime,
-}: {
-  running: boolean;
-  startTime: number | null;
-}) {
-  const [elapsedTime, setElapsedTime] = useState("00:00:00.000");
-
-  useEffect(() => {
-    let timer: any;
-    if (running && startTime) {
-      timer = setInterval(() => {
-        const now = performance.now();
-        const diff = now - startTime;
-        const hours = Math.floor(diff / 3600000)
-          .toString()
-          .padStart(2, "0");
-        const minutes = Math.floor((diff % 3600000) / 60000)
-          .toString()
-          .padStart(2, "0");
-        const seconds = Math.floor((diff % 60000) / 1000)
-          .toString()
-          .padStart(2, "0");
-        const ms = Math.floor(diff % 1000)
-          .toString()
-          .padStart(3, "0");
-        setElapsedTime(`${hours}:${minutes}:${seconds}.${ms}`);
-      }, 67);
-    }
-    return () => clearInterval(timer);
-  }, [running, startTime]);
-
-  if (elapsedTime === "00:00:00.000") return null;
-  return (
-    <div className="px-3 py-1 bg-white/[0.04] border border-white/[0.08] text-xs font-mono text-zinc-400 font-bold rounded-xl shadow-sm">
-      {elapsedTime}
-    </div>
-  );
-}
-
-function ComboTextarea({
-  initialValue,
-  onChangeDebounced,
-  disabled,
-}: {
-  initialValue: string;
-  onChangeDebounced: (val: string) => void;
-  disabled: boolean;
-}) {
-  const [val, setVal] = useState(initialValue);
-  const timerRef = useRef<any>(null);
-
-  useEffect(() => {
-    if (initialValue && initialValue !== val) {
-      setVal(initialValue);
-    }
-  }, [initialValue]);
-
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newVal = e.target.value;
-    setVal(newVal);
-    if (timerRef.current) clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(() => {
-      onChangeDebounced(newVal);
-    }, 400); // 400ms debounce
-  };
-
-  return (
-    <textarea
-      value={val}
-      onChange={handleChange}
-      rows={12}
-      disabled={disabled}
-      className={`w-full bg-[#0c0d12] border border-white/[0.08] focus:border-blue-500/40 p-4 text-xs font-mono text-blue-400 focus:outline-none resize-none transition-all duration-200 rounded-2xl scrollbar-thin scrollbar-thumb-zinc-800 h-[320px] ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
-      placeholder={"user:pass\nuser|pass"}
-      spellCheck="false"
-    />
-  );
 }
 
 function AppContent() {

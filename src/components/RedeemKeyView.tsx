@@ -54,72 +54,69 @@ export const RedeemKeyView: React.FC<RedeemKeyViewProps> = ({
         </div>
 
         {/* Main Glassmorphic Container */}
-        <div className="relative overflow-hidden rounded-[32px] border border-white/[0.1] bg-[#0c0c12]/85 backdrop-blur-2xl shadow-[0_24px_60px_-15px_rgba(0,0,0,0.8),0_0_40px_rgba(59,130,246,0.08)] glass-card glass-reflection">
-          {/* Prismatic Top Edge Light */}
-          <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/25 to-transparent pointer-events-none z-20" />
-
+        <div className="relative overflow-hidden rounded-lg border border-[#2A2A2A] bg-[#141414]">
           <div className="grid grid-cols-1 lg:grid-cols-12 relative z-10">
             {/* Left Column: Info & Upgrade */}
-            <div className="lg:col-span-5 p-6 sm:p-8 lg:p-10 border-b lg:border-b-0 lg:border-r border-white/[0.08] bg-[#08080c]/50 flex flex-col justify-between">
+            <div className="lg:col-span-5 p-6 sm:p-8 lg:p-10 border-b lg:border-b-0 lg:border-r border-[#2A2A2A] bg-[#171717] flex flex-col justify-between">
               <div>
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-cyan-500 text-white rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-blue-500/25">
-                  <KeyIcon className="w-8 h-8 text-white" />
+                <div className="w-12 h-12 bg-white text-zinc-950 rounded-md flex items-center justify-center mb-5">
+                  <KeyIcon className="w-6 h-6 text-zinc-950" />
                 </div>
                 <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight mb-2">
                   เปิดใช้งาน <span className="text-blue-400">License Key</span>
                 </h2>
-                <p className="text-white/50 text-xs sm:text-sm leading-relaxed mb-6">
+                <p className="text-zinc-400 text-xs sm:text-sm leading-relaxed mb-6">
                   กรอกรหัสสินค้าหรือ License Key ที่ได้รับจากการสั่งซื้อ เพื่อเติมเครดิต หรือเปิดใช้งานผลิตภัณฑ์ทันที
                 </p>
 
                 <div className="space-y-3">
-                  <div className="flex items-center gap-2.5 text-xs text-white/70">
+                  <div className="flex items-center gap-2.5 text-xs text-zinc-300">
                     <Check className="w-4 h-4 text-emerald-400 shrink-0" />
                     <span>ตรวจสอบสถานะคีย์แบบเรียลไทม์</span>
                   </div>
-                  <div className="flex items-center gap-2.5 text-xs text-white/70">
+                  <div className="flex items-center gap-2.5 text-xs text-zinc-300">
                     <Check className="w-4 h-4 text-emerald-400 shrink-0" />
                     <span>รับสิทธิ์และอัปเดตสถานะทันทีหลัง Redeem</span>
                   </div>
                 </div>
               </div>
 
-              <div className="pt-6 mt-6 border-t border-white/[0.06]">
-                <p className="text-[11px] text-white/40 font-bold uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
+              <div className="pt-6 mt-6 border-t border-[#2A2A2A]">
+                <p className="text-[11px] text-zinc-400 font-bold uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
                   <ShoppingCart className="w-3.5 h-3.5 text-blue-400" /> ยังไม่มีรหัสคีย์?
                 </p>
                 <button 
                   onClick={onGoToStore}
-                  className="w-full flex items-center justify-between px-4 py-3 bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] hover:border-blue-500/30 text-white transition-all rounded-2xl active:scale-[0.98] group cursor-pointer"
+                  className="w-full flex items-center justify-between px-3.5 py-2.5 bg-[#141414] hover:bg-[#1a1a1a] border border-[#2A2A2A] hover:border-[#383838] text-white transition-all rounded-md active:scale-[0.98] group cursor-pointer"
                 >
                   <span className="text-xs font-bold flex items-center gap-2">
                     เลือกดูสินค้าในร้านค้า
                   </span>
-                  <ChevronRight className="w-4 h-4 text-white/40 group-hover:text-blue-400 group-hover:translate-x-1 transition-all" />
+                  <ChevronRight className="w-4 h-4 text-zinc-400 group-hover:text-blue-400 group-hover:translate-x-1 transition-all" />
                 </button>
               </div>
             </div>
 
             {/* Right Column: Key Input Form */}
-            <div className="lg:col-span-7 p-6 sm:p-8 lg:p-12 flex flex-col justify-center bg-[#0c0c12]/60">
+            <div className="lg:col-span-7 p-6 sm:p-8 lg:p-12 flex flex-col justify-center bg-[#141414]">
               <div className="max-w-md mx-auto w-full">
                 <div className="mb-6">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] text-[10px] font-bold uppercase tracking-widest text-white/50 mb-3">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-sm bg-[#171717] border border-[#2A2A2A] text-[10px] font-bold uppercase tracking-widest text-zinc-400 mb-3">
                     <Zap className="w-3 h-3 text-yellow-400" /> Instant Activation
                   </span>
                   <h3 className="text-xl sm:text-2xl font-black text-white mb-1">Redeem Code</h3>
-                  <p className="text-white/40 text-xs font-medium">วางรหัส License Key 16 หลักของคุณลงในช่องด้านล่าง</p>
+                  <p className="text-zinc-400 text-xs font-medium">วางรหัส License Key 16 หลักของคุณลงในช่องด้านล่าง</p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-5">
+                <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
-                    <div className={`relative transition-all duration-300 rounded-2xl border ${
+                    <div className={`relative transition-all duration-300 rounded-md border ${
                       isFocused || keyInput 
-                        ? 'border-blue-500 bg-blue-500/[0.04] shadow-[0_0_20px_rgba(59,130,246,0.15)]' 
-                        : 'border-white/[0.1] bg-white/[0.02] hover:border-white/20'
+                        ? 'border-blue-500 bg-[#171717]' 
+                        : 'border-[#2A2A2A] bg-[#171717] hover:border-[#383838]'
                     } ${!isLoggedIn ? 'opacity-50 select-none' : ''}`}>
-                      <div className="flex items-center gap-3 px-4 sm:px-5">
-                        <KeyIcon className={`w-5 h-5 transition-colors duration-300 ${isFocused || keyInput ? 'text-blue-400' : 'text-white/30'}`} />
+                      <div className="flex items-center gap-3 px-4">
+                        <KeyIcon className={`w-4 h-4 transition-colors duration-300 ${isFocused || keyInput ? 'text-blue-400' : 'text-zinc-500'}`} />
                         <input 
                           required
                           disabled={!isLoggedIn}
@@ -128,19 +125,19 @@ export const RedeemKeyView: React.FC<RedeemKeyViewProps> = ({
                           onFocus={() => setIsFocused(true)}
                           onBlur={() => setIsFocused(false)}
                           type="text" 
-                          className="w-full bg-transparent py-4 text-white font-mono text-base sm:text-lg focus:outline-none placeholder:text-white/20 tracking-wider disabled:bg-transparent" 
+                          className="w-full bg-transparent py-3 text-white font-mono text-sm sm:text-base focus:outline-none placeholder:text-zinc-600 tracking-wider disabled:bg-transparent" 
                           placeholder="XXXX-XXXX-XXXX-XXXX" 
                         />
                       </div>
                     </div>
 
                     {!isLoggedIn && (
-                      <div className="mt-4 p-4 rounded-2xl bg-white/[0.03] border border-white/[0.08] text-center">
-                        <p className="text-xs font-bold text-white/60 mb-2">กรุณาเข้าสู่ระบบก่อนทำการ Redeem คีย์</p>
+                      <div className="mt-4 p-3.5 rounded-md bg-[#171717] border border-[#2A2A2A] text-center">
+                        <p className="text-xs font-bold text-zinc-300 mb-2">กรุณาเข้าสู่ระบบก่อนทำการ Redeem คีย์</p>
                         <button 
                           type="button" 
                           onClick={onLoginClick} 
-                          className="px-5 py-2 bg-gradient-to-r from-blue-600 to-cyan-500 text-white text-xs font-black rounded-full shadow-lg shadow-blue-500/20 active:scale-95 cursor-pointer"
+                          className="px-4 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-md active:scale-95 cursor-pointer"
                         >
                           เข้าสู่ระบบ / สมัครสมาชิก
                         </button>
@@ -151,7 +148,7 @@ export const RedeemKeyView: React.FC<RedeemKeyViewProps> = ({
                   <button 
                     type="submit" 
                     disabled={!keyInput || !isLoggedIn}
-                    className="w-full py-4 rounded-full bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-black text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-blue-600/30 hover:shadow-blue-500/50 disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98] transition-all cursor-pointer"
+                    className="w-full py-3 rounded-md bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98] transition-all cursor-pointer shadow-lg shadow-blue-600/20"
                   >
                     <span>เปิดใช้งานทันที</span>
                     <Zap className="w-4 h-4 fill-white flex-shrink-0" />

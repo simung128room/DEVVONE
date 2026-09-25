@@ -249,7 +249,7 @@ export const WalletView: React.FC<WalletViewProps> = ({ userPlan, setUserPlan, o
               </div>
 
               {/* Current balance chip */}
-              <div className="bg-[#141414] border border-[#2A2A2A] px-5 py-3 rounded-[20px] flex items-center gap-3">
+              <div className="bg-[#141414] border border-[#2A2A2A] px-4 py-2.5 rounded-lg flex items-center gap-3">
                 <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider">ยอดเงินปัจจุบัน</span>
                 <span className="text-xl sm:text-2xl font-black font-mono text-emerald-400">
                   ฿{(userPlan?.balance || 0).toLocaleString()}
@@ -258,27 +258,27 @@ export const WalletView: React.FC<WalletViewProps> = ({ userPlan, setUserPlan, o
             </div>
 
             {/* Selection Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
               {/* Card 1: TrueMoney Voucher */}
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: 0.05 }}
-                whileHover={{ y: -5 }}
+                whileHover={{ y: -2 }}
                 whileTap={{ scale: 0.98 }}
-                className="bg-[#141414] border border-[#2A2A2A] hover:border-[#383838] p-8 sm:p-10 rounded-[26px] flex flex-col items-center text-center transition-all group relative overflow-hidden cursor-pointer"
+                className="bg-[#141414] border border-[#2A2A2A] hover:border-[#383838] p-5 sm:p-6 rounded-lg flex flex-col items-center text-center transition-all group relative overflow-hidden cursor-pointer"
                 onClick={() => setActiveView('truemoney')}
               >
-                <div className="w-20 h-20 sm:w-24 sm:h-24 mb-6 transition-transform duration-500 group-hover:scale-105 flex items-center justify-center rounded-[22px] bg-white text-zinc-950">
-                  <Gift className="w-10 h-10 sm:w-12 sm:h-12 text-zinc-950" strokeWidth={2.2} />
+                <div className="w-14 h-14 sm:w-16 sm:h-16 mb-4 transition-transform duration-300 group-hover:scale-105 flex items-center justify-center rounded-md bg-white text-zinc-950">
+                  <Gift className="w-7 h-7 sm:w-8 sm:h-8 text-zinc-950" strokeWidth={2.2} />
                 </div>
-                <h2 className="text-xl sm:text-2xl font-bold text-white mb-2 group-hover:text-blue-400 transition-colors">
+                <h2 className="text-lg sm:text-xl font-bold text-white mb-1.5 group-hover:text-blue-400 transition-colors">
                   TrueMoney (ซองของขวัญ)
                 </h2>
-                <p className="text-zinc-400 text-xs sm:text-sm mb-6 leading-relaxed px-2 font-medium">
+                <p className="text-zinc-400 text-xs sm:text-sm mb-4 leading-relaxed px-2 font-medium">
                   เติมเงินผ่านลิงก์ซองของขวัญ TrueMoney Wallet สะดวก รวดเร็ว ตรวจสอบยอดเงินอัตโนมัติทันที
                 </p>
-                <div className="mt-auto px-5 py-2 rounded-full bg-[#171717] border border-[#2A2A2A] text-xs text-zinc-300 font-mono font-bold uppercase tracking-wider group-hover:text-white transition-all">
+                <div className="mt-auto px-3.5 py-1.5 rounded-md bg-[#171717] border border-[#2A2A2A] text-xs text-zinc-300 font-mono font-bold uppercase tracking-wider group-hover:text-white transition-all">
                   GIFT LINK TOPUP
                 </div>
               </motion.div>
@@ -288,21 +288,21 @@ export const WalletView: React.FC<WalletViewProps> = ({ userPlan, setUserPlan, o
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: 0.1 }}
-                whileHover={{ y: -5 }}
+                whileHover={{ y: -2 }}
                 whileTap={{ scale: 0.98 }}
-                className="bg-[#141414] border border-[#2A2A2A] hover:border-[#383838] p-8 sm:p-10 rounded-[26px] flex flex-col items-center text-center transition-all group relative overflow-hidden cursor-pointer"
+                className="bg-[#141414] border border-[#2A2A2A] hover:border-[#383838] p-5 sm:p-6 rounded-lg flex flex-col items-center text-center transition-all group relative overflow-hidden cursor-pointer"
                 onClick={() => setActiveView('bank')}
               >
-                <div className="w-20 h-20 sm:w-24 sm:h-24 mb-6 transition-transform duration-500 group-hover:scale-105 flex items-center justify-center rounded-[22px] bg-white text-zinc-950">
-                  <Landmark className="w-10 h-10 sm:w-12 sm:h-12 text-zinc-950" strokeWidth={2.2} />
+                <div className="w-14 h-14 sm:w-16 sm:h-16 mb-4 transition-transform duration-300 group-hover:scale-105 flex items-center justify-center rounded-md bg-white text-zinc-950">
+                  <Landmark className="w-7 h-7 sm:w-8 sm:h-8 text-zinc-950" strokeWidth={2.2} />
                 </div>
-                <h2 className="text-xl sm:text-2xl font-bold text-white mb-2 group-hover:text-blue-400 transition-colors">
+                <h2 className="text-lg sm:text-xl font-bold text-white mb-1.5 group-hover:text-blue-400 transition-colors">
                   โอนผ่านธนาคาร (สแกนสลิป)
                 </h2>
-                <p className="text-zinc-400 text-xs sm:text-sm mb-6 leading-relaxed px-2 font-medium">
+                <p className="text-zinc-400 text-xs sm:text-sm mb-4 leading-relaxed px-2 font-medium">
                   โอนเงินเข้าบัญชีธนาคารแล้วอัปโหลดสลิป ระบบตรวจสอบความถูกต้องและเติมเงินให้อัตโนมัติ
                 </p>
-                <div className="mt-auto px-5 py-2 rounded-full bg-[#171717] border border-[#2A2A2A] text-xs text-zinc-300 font-mono font-bold uppercase tracking-wider group-hover:text-white transition-all">
+                <div className="mt-auto px-3.5 py-1.5 rounded-md bg-[#171717] border border-[#2A2A2A] text-xs text-zinc-300 font-mono font-bold uppercase tracking-wider group-hover:text-white transition-all">
                   BANK SLIP SCANNER
                 </div>
               </motion.div>
@@ -316,32 +316,32 @@ export const WalletView: React.FC<WalletViewProps> = ({ userPlan, setUserPlan, o
             initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="max-w-xl mx-auto bg-[#141414] border border-[#2A2A2A] p-6 sm:p-10 rounded-[26px] relative"
+            className="max-w-xl mx-auto bg-[#141414] border border-[#2A2A2A] p-5 sm:p-7 rounded-lg relative"
           >
             <button 
               onClick={() => setActiveView('main')}
-              className="mb-6 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#171717] border border-[#2A2A2A] text-zinc-300 hover:text-white hover:bg-[#202020] transition-all font-bold text-xs cursor-pointer active:scale-95"
+              className="mb-5 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[#171717] border border-[#2A2A2A] text-zinc-300 hover:text-white hover:bg-[#202020] transition-all font-bold text-xs cursor-pointer active:scale-95"
             >
               <ArrowLeft className="w-3.5 h-3.5 text-orange-400" /> ย้อนกลับ
             </button>
             
-            <div className="flex flex-col items-center text-center mb-6">
-              <div className="w-20 h-20 mb-4 flex items-center justify-center rounded-3xl bg-gradient-to-br from-orange-500 to-amber-600 shadow-lg shadow-orange-500/20 text-white">
-                <Gift className="w-10 h-10" />
+            <div className="flex flex-col items-center text-center mb-5">
+              <div className="w-14 h-14 mb-3 flex items-center justify-center rounded-md bg-orange-500/20 text-orange-400 border border-orange-500/30">
+                <Gift className="w-7 h-7" />
               </div>
-              <h2 className="text-xl sm:text-2xl font-black text-white">เติมเงินผ่านซองของขวัญ</h2>
-              <p className="text-white/50 text-xs sm:text-sm mt-1 font-medium">คัดลอกลิงก์ซองของขวัญจากแอป TrueMoney Wallet แล้ววางที่นี่</p>
+              <h2 className="text-lg sm:text-xl font-bold text-white">เติมเงินผ่านซองของขวัญ</h2>
+              <p className="text-zinc-400 text-xs sm:text-sm mt-0.5 font-medium">คัดลอกลิงก์ซองของขวัญจากแอป TrueMoney Wallet แล้ววางที่นี่</p>
             </div>
 
             <div className="space-y-4">
-              <div className="bg-white/[0.03] border border-white/[0.08] p-4 rounded-2xl flex items-center gap-3 text-white/80">
-                <ShieldCheck className="w-5 h-5 text-orange-400 shrink-0" />
-                <span className="text-xs sm:text-sm font-bold tracking-wider">ระบบตรวจสอบและเติมเครดิตให้อัตโนมัติ 100%</span>
+              <div className="bg-[#171717] border border-[#2A2A2A] p-3 rounded-md flex items-center gap-2.5 text-zinc-300">
+                <ShieldCheck className="w-4 h-4 text-orange-400 shrink-0" />
+                <span className="text-xs font-bold tracking-wider">ระบบตรวจสอบและเติมเครดิตให้อัตโนมัติ 100%</span>
               </div>
 
-              <form onSubmit={handleTruemoneyTopup} className="mt-6 space-y-4">
+              <form onSubmit={handleTruemoneyTopup} className="mt-5 space-y-3.5">
                 <div>
-                  <label className="block text-xs font-bold text-white/50 uppercase tracking-wider mb-2 ml-1">
+                  <label className="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1.5 ml-0.5">
                     ลิงก์ซองอั่งเปา TrueMoney (Gift Link)
                   </label>
                   <input
@@ -349,13 +349,13 @@ export const WalletView: React.FC<WalletViewProps> = ({ userPlan, setUserPlan, o
                     value={truemoneyLink}
                     onChange={(e) => setTruemoneyLink(e.target.value)}
                     placeholder="https://gift.truemoney.com/campaign/?v=..."
-                    className="w-full bg-white/[0.03] border border-white/[0.1] rounded-2xl p-4 text-white text-sm placeholder:text-white/20 focus:outline-none focus:border-orange-500/60 transition-all font-sans font-medium shadow-inner"
+                    className="w-full bg-[#171717] border border-[#2A2A2A] rounded-md p-2.5 text-white text-sm placeholder:text-zinc-600 focus:outline-none focus:border-orange-500/60 transition-all font-sans font-medium"
                     required
                   />
                 </div>
                 <button
                   type="submit"
-                  className="w-full py-4 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 text-white font-black text-xs sm:text-sm tracking-wider uppercase transition-all duration-200 shadow-lg shadow-orange-500/25 cursor-pointer active:scale-[0.98]"
+                  className="w-full py-2.5 rounded-md bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs sm:text-sm tracking-wider uppercase transition-all duration-200 cursor-pointer active:scale-[0.98]"
                 >
                   ยืนยันการเติมเงิน
                 </button>
@@ -370,83 +370,80 @@ export const WalletView: React.FC<WalletViewProps> = ({ userPlan, setUserPlan, o
             initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="max-w-xl mx-auto bg-[#0c0c12]/85 backdrop-blur-2xl border border-white/[0.1] p-6 sm:p-10 rounded-[32px] shadow-2xl relative glass-card glass-reflection"
+            className="max-w-xl mx-auto bg-[#141414] border border-[#2A2A2A] p-5 sm:p-7 rounded-lg relative"
           >
-            {/* Prismatic Edge */}
-            <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-emerald-400/30 to-transparent pointer-events-none" />
-
             <button 
               onClick={() => setActiveView('main')}
-              className="mb-6 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.04] border border-white/[0.08] text-white/70 hover:text-white hover:bg-white/[0.08] transition-all font-bold text-xs cursor-pointer shadow-sm active:scale-95"
+              className="mb-5 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[#171717] border border-[#2A2A2A] text-zinc-300 hover:text-white hover:bg-[#202020] transition-all font-bold text-xs cursor-pointer active:scale-95"
             >
               <ArrowLeft className="w-3.5 h-3.5 text-emerald-400" /> ย้อนกลับ
             </button>
             
-            <div className="space-y-6">
+            <div className="space-y-4">
               {/* Bank Account Info Card */}
-              <div className="bg-white/[0.02] border border-white/[0.08] p-6 rounded-[26px] text-center space-y-4">
-                <div className="flex bg-[#00A82D]/10 border border-[#00A82D]/30 text-[#00A82D] px-5 py-2 gap-2 items-center w-fit mx-auto rounded-full font-bold text-xs select-none">
-                  <Landmark className="w-4 h-4" />
+              <div className="bg-[#171717] border border-[#2A2A2A] p-4 sm:p-5 rounded-md text-center space-y-3">
+                <div className="flex bg-[#00A82D]/10 border border-[#00A82D]/30 text-[#00A82D] px-3 py-0.5 gap-1.5 items-center w-fit mx-auto rounded-sm font-bold text-xs select-none">
+                  <Landmark className="w-3.5 h-3.5" />
                   <span>ธนาคารกสิกรไทย (K-BANK)</span>
                 </div>
                 
-                <div className="pt-2">
-                  <p className="text-[11px] text-white/40 font-bold uppercase tracking-widest mb-1.5">Account Number / เลขที่บัญชี</p>
-                  <div className="flex items-center justify-center gap-3">
-                    <span className="text-2xl sm:text-3xl font-mono font-black text-white tracking-widest select-all">
+                <div className="pt-1">
+                  <p className="text-[11px] text-zinc-400 font-bold uppercase tracking-widest mb-1">Account Number / เลขที่บัญชี</p>
+                  <div className="flex items-center justify-center gap-2.5">
+                    <span className="text-xl sm:text-2xl font-mono font-bold text-white tracking-widest select-all">
                       196-3-87032-5
                     </span>
                     <button 
                       onClick={() => {
                         navigator.clipboard.writeText('1963870325');
-                        Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'คัดลอกเลขบัญชีแล้ว', showConfirmButton: false, timer: 1500, background: '#0c0c12', color: '#fff' });
+                        Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'คัดลอกเลขบัญชีแล้ว', showConfirmButton: false, timer: 1500, background: '#141414', color: '#fff' });
                       }}
-                      className="p-3 rounded-xl bg-white/[0.04] border border-white/[0.1] hover:border-emerald-500/40 text-emerald-400 hover:text-white transition-all active:scale-95 cursor-pointer"
+                      className="p-1.5 rounded-md bg-[#141414] border border-[#2A2A2A] hover:border-emerald-500/40 text-emerald-400 hover:text-white transition-all active:scale-95 cursor-pointer"
                       title="คัดลอกเลขบัญชี"
                     >
-                      <Copy className="w-4 h-4" />
+                      <Copy className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 </div>
 
-                <div className="pt-4 border-t border-white/[0.06] flex flex-col items-center">
-                  <p className="text-[11px] text-white/40 font-bold uppercase tracking-widest mb-1">Account Name / ชื่อบัญชี</p>
-                  <p className="text-lg sm:text-xl font-black text-white">นาย กรวิชญ์</p>
+                <div className="pt-3 border-t border-[#2A2A2A] flex flex-col items-center">
+                  <p className="text-[11px] text-zinc-400 font-bold uppercase tracking-widest mb-0.5">Account Name / ชื่อบัญชี</p>
+                  <p className="text-base sm:text-lg font-bold text-white">นาย กรวิชญ์</p>
                 </div>
               </div>
 
               {/* Sandbox info badge */}
-              <div className="bg-emerald-500/[0.05] border border-emerald-500/20 p-4 rounded-2xl text-center select-none shadow-inner">
-                <p className="text-xs text-emerald-400 font-bold tracking-wide mb-1 flex items-center justify-center gap-1.5 uppercase">
+              <div className="bg-[#171717] border border-[#2A2A2A] p-3 rounded-md text-center select-none">
+                <p className="text-xs text-emerald-400 font-bold tracking-wide mb-0.5 flex items-center justify-center gap-1.5 uppercase">
                   <Sparkles className="w-3.5 h-3.5" />
-                  <span>ระบบตรวจสอบสลิปอัตโนมัติ (Sandbox Enabled)</span>
+                  <span>ระบบตรวจสอบสลิปอัตโนมัติ</span>
                 </p>
-                <p className="text-[11px] text-white/60 leading-relaxed font-medium">
-                  ท่านสามารถโอนเงินจริงหรือทดสอบอัปโหลดรูปภาพ ระบบจะตรวจเช็คยอดเงินและปรับให้อัตโนมัติ
+                <p className="text-[11px] text-zinc-400 leading-relaxed font-medium">
+                  โอนเงินและอัปโหลดสลิป ระบบจะตรวจเช็คยอดเงินและปรับยอดเครดิตให้อัตโนมัติทันที
                 </p>
               </div>
 
               {/* Upload Dropzone */}
               <div className="pt-1 flex flex-col items-center w-full">
-                <label className="flex flex-col items-center justify-center w-full py-8 sm:py-10 rounded-[28px] bg-white/[0.02] hover:bg-white/[0.04] transition-all border-2 border-dashed border-white/[0.1] hover:border-emerald-500/40 cursor-pointer group active:scale-[0.99] relative shadow-lg">
+                <label className="flex flex-col items-center justify-center w-full py-6 sm:py-7 rounded-md bg-[#171717] hover:bg-[#1a1a1a] transition-all border border-dashed border-[#2A2A2A] hover:border-emerald-500/40 cursor-pointer group active:scale-[0.99] relative">
                   <input type="file" className="hidden" accept="image/png, image/jpeg, image/webp" onChange={handleSlipUpload} disabled={isUploading} />
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 mb-4 group-hover:scale-105 transition-transform flex items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-700 shadow-xl shadow-emerald-500/20 text-white">
-                    <QrCode className="w-8 h-8 sm:w-10 sm:h-10" />
+                  <div className="w-12 h-12 mb-2.5 group-hover:scale-105 transition-transform flex items-center justify-center rounded-md bg-emerald-600/20 text-emerald-400 border border-emerald-500/30">
+                    <QrCode className="w-6 h-6" />
                   </div>
                   <div className="text-center px-4">
-                    <span className="text-base sm:text-lg font-black text-white block leading-snug">
+                    <span className="text-sm sm:text-base font-bold text-white block leading-snug">
                       {isUploading ? 'กำลังอัปโหลดและตรวจสอบสลิป...' : 'อัปโหลดสลิปโอนเงินของคุณ'}
                     </span>
-                    <span className="text-xs text-white/40 font-bold mt-1.5 block">
+                    <span className="text-xs text-zinc-500 font-medium mt-1 block">
                       แตะเพื่อเลือกรูปภาพ หรือลากไฟล์มาวาง (PNG, JPG)
                     </span>
                   </div>
                 </label>
               </div>
 
-              <div className="pt-2 flex items-center justify-center gap-2 select-none opacity-50">
-                <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                <span className="text-[10px] font-bold text-white/70 uppercase tracking-widest">
+              <div className="pt-1 flex items-center justify-center gap-1.5 select-none opacity-60">
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
                   Secure Real-Time Automatic Slip Scanning System
                 </span>
               </div>

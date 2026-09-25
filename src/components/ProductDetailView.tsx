@@ -35,23 +35,23 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ product, u
       >
         <button 
           onClick={onBack} 
-          className="text-white/50 hover:text-blue-400 transition-colors flex items-center gap-1.5 font-bold px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.08] hover:border-white/20 active:scale-95 cursor-pointer"
+          className="text-zinc-400 hover:text-white transition-colors flex items-center gap-1.5 font-bold px-3 py-1.5 rounded-md bg-[#141414] border border-[#2A2A2A] hover:border-[#383838] active:scale-95 cursor-pointer"
         >
           <ArrowLeft className="w-4 h-4 text-blue-400" />
           <span>กลับสู่หน้าหลัก</span>
         </button>
-        <ChevronRight className="w-4 h-4 text-white/30" />
-        <span className="text-white/90 font-bold truncate max-w-[200px] sm:max-w-md">{product.name}</span>
+        <ChevronRight className="w-4 h-4 text-zinc-600" />
+        <span className="text-zinc-200 font-bold truncate max-w-[200px] sm:max-w-md">{product.name}</span>
       </motion.div>
 
       {/* Main Product Card */}
       <div 
-        className="relative overflow-hidden rounded-2xl sm:rounded-3xl border border-white/10 bg-[#0e1018]/95 shadow-xl flex flex-col md:flex-row"
+        className="relative overflow-hidden rounded-lg border border-[#2A2A2A] bg-[#141414] flex flex-col md:flex-row"
       >
         {/* Left Side: Product Image Display */}
-        <div className="w-full md:w-5/12 lg:w-1/2 p-6 sm:p-8 flex flex-col items-center justify-center bg-[#090a0f] border-b md:border-b-0 md:border-r border-white/[0.08] relative overflow-hidden">
+        <div className="w-full md:w-5/12 lg:w-1/2 p-4 sm:p-6 flex flex-col items-center justify-center bg-[#171717] border-b md:border-b-0 md:border-r border-[#2A2A2A] relative overflow-hidden">
           <div
-            className="w-full aspect-square relative overflow-hidden rounded-2xl border border-white/[0.1] bg-[#121218] group shadow-lg"
+            className="w-full aspect-square relative overflow-hidden rounded-md border border-[#2A2A2A] bg-[#141414] group"
           >
             <img 
               loading="lazy" 
@@ -64,7 +64,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ product, u
               referrerPolicy="no-referrer"
             />
             {discount !== null && (
-              <div className="absolute top-3 left-3 z-20 bg-rose-600 text-white font-bold px-3 py-1 rounded-full border border-rose-500/40 text-xs shadow-md flex items-center gap-1">
+              <div className="absolute top-2 left-2 z-20 bg-rose-600 text-white font-bold px-2 py-0.5 rounded-sm text-xs shadow-md flex items-center gap-1">
                 <Sparkles className="w-3 h-3" />
                 <span>-{discount}%</span>
               </div>
@@ -73,65 +73,65 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ product, u
         </div>
 
         {/* Right Side: Product Details & Purchase Engine */}
-        <div className="w-full md:w-7/12 lg:w-1/2 p-6 sm:p-8 lg:p-10 flex flex-col justify-between relative z-10">
+        <div className="w-full md:w-7/12 lg:w-1/2 p-5 sm:p-6 lg:p-8 flex flex-col justify-between relative z-10">
           <div>
             {/* Badges Bar */}
-            <div className="flex flex-wrap items-center gap-2 mb-3.5">
-              <span className="px-2.5 py-0.5 bg-blue-500/10 text-blue-400 font-bold text-xs border border-blue-500/20 rounded-full flex items-center gap-1.5 uppercase tracking-wider">
+            <div className="flex flex-wrap items-center gap-2 mb-3">
+              <span className="px-2 py-0.5 bg-[#171717] text-blue-400 font-bold text-xs border border-[#2A2A2A] rounded-sm flex items-center gap-1.5 uppercase tracking-wider">
                 <Box className="w-3.5 h-3.5" /> Product
               </span>
               {product.stock > 0 ? (
-                <span className="px-2.5 py-0.5 bg-emerald-500/10 text-emerald-400 font-bold text-xs border border-emerald-500/20 rounded-full flex items-center gap-1.5 uppercase tracking-wider">
+                <span className="px-2 py-0.5 bg-[#171717] text-emerald-400 font-bold text-xs border border-[#2A2A2A] rounded-sm flex items-center gap-1.5 uppercase tracking-wider">
                   <CheckCircle2 className="w-3.5 h-3.5" /> IN STOCK
                 </span>
               ) : (
-                <span className="px-2.5 py-0.5 bg-rose-500/10 text-rose-400 font-bold text-xs border border-rose-500/20 rounded-full flex items-center gap-1.5 uppercase tracking-wider">
+                <span className="px-2 py-0.5 bg-[#171717] text-rose-400 font-bold text-xs border border-[#2A2A2A] rounded-sm flex items-center gap-1.5 uppercase tracking-wider">
                   <Box className="w-3.5 h-3.5" /> OUT OF STOCK
                 </span>
               )}
             </div>
             
             {/* Title */}
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white leading-tight mb-3 tracking-tight">
+            <h1 className="text-xl sm:text-2xl font-bold text-white leading-tight mb-3 tracking-tight">
               {product.name}
             </h1>
             
             {/* Price Row */}
-            <div className="flex items-baseline gap-3 mb-5">
-              <span className="text-2xl sm:text-3xl lg:text-4xl font-black text-amber-400 font-mono tracking-tight">
+            <div className="flex items-baseline gap-3 mb-4">
+              <span className="text-2xl sm:text-3xl font-extrabold text-white font-mono tracking-tight">
                 ฿{(product.price || 0).toLocaleString()}
               </span>
               {product.originalPrice && product.price && product.originalPrice > product.price && (
-                <span className="text-base sm:text-lg font-bold text-white/40 line-through font-mono">
+                <span className="text-sm sm:text-base font-bold text-zinc-500 line-through font-mono">
                   ฿{(product.originalPrice || 0).toLocaleString()}
                 </span>
               )}
             </div>
 
             {/* Quick Stats Grid */}
-            <div className="grid grid-cols-2 gap-3 mb-5">
-              <div className="bg-[#121420]/80 border border-white/[0.08] p-3.5 rounded-xl shadow-sm">
-                <div className="text-white/50 text-xs font-medium mb-1 flex items-center gap-1.5 uppercase tracking-wider">
+            <div className="grid grid-cols-2 gap-2.5 mb-4">
+              <div className="bg-[#171717] border border-[#2A2A2A] p-3 rounded-md">
+                <div className="text-zinc-400 text-xs font-medium mb-1 flex items-center gap-1.5 uppercase tracking-wider">
                   <Box className="w-3.5 h-3.5 text-blue-400"/> สถานะสต๊อก
                 </div>
-                <div className={`text-lg sm:text-xl font-bold font-mono ${product.stock > 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                <div className={`text-base sm:text-lg font-bold font-mono ${product.stock > 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
                   {product.stock >= 999999 ? '∞ ไม่จำกัด' : `${product.stock.toLocaleString()} ชิ้น`}
                 </div>
               </div>
-              <div className="bg-[#121420]/80 border border-white/[0.08] p-3.5 rounded-xl shadow-sm">
-                <div className="text-white/50 text-xs font-medium mb-1 flex items-center gap-1.5 uppercase tracking-wider">
+              <div className="bg-[#171717] border border-[#2A2A2A] p-3 rounded-md">
+                <div className="text-zinc-400 text-xs font-medium mb-1 flex items-center gap-1.5 uppercase tracking-wider">
                   <ShoppingCart className="w-3.5 h-3.5 text-blue-400"/> สั่งซื้อไปแล้ว
                 </div>
-                <div className="text-lg sm:text-xl font-bold font-mono text-white">
+                <div className="text-base sm:text-lg font-bold font-mono text-white">
                   {(product.soldCount || 0).toLocaleString()} ครั้ง
                 </div>
               </div>
             </div>
 
             {/* Description Section */}
-            <div className="mb-6">
-              <div className="flex items-center justify-between mb-2.5">
-                <h4 className="font-bold text-white text-sm sm:text-base flex items-center gap-2">
+            <div className="mb-4">
+              <div className="flex items-center justify-between mb-2">
+                <h4 className="font-bold text-white text-xs sm:text-sm flex items-center gap-1.5">
                   <FileText className="w-4 h-4 text-blue-400" />
                   รายละเอียดสินค้า
                 </h4>
@@ -143,9 +143,9 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ product, u
                         addToast({ title: "คัดลอกลิงก์แล้ว", message: "แชร์ลิงก์ให้เพื่อนได้เลย!", type: "success" });
                       });
                     }}
-                    className="text-[11px] font-bold text-white/60 hover:text-white transition-all flex items-center gap-1.5 bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] px-3.5 py-1.5 rounded-full active:scale-95 cursor-pointer shadow-sm"
+                    className="text-[11px] font-bold text-zinc-300 hover:text-white transition-all flex items-center gap-1 bg-[#171717] hover:bg-[#202020] border border-[#2A2A2A] px-2 py-0.5 rounded-sm active:scale-95 cursor-pointer"
                   >
-                    <Share2 className="w-3.5 h-3.5 text-blue-400" /> แชร์สินค้า
+                    <Share2 className="w-3.5 h-3.5 text-blue-400" /> แชร์
                   </button>
                   <button 
                     onClick={() => {
@@ -158,28 +158,28 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ product, u
                       link.click();
                       URL.revokeObjectURL(url);
                     }}
-                    className="text-[11px] font-bold text-white/60 hover:text-white transition-all flex items-center gap-1.5 bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] px-3.5 py-1.5 rounded-full active:scale-95 cursor-pointer shadow-sm"
+                    className="text-[11px] font-bold text-zinc-300 hover:text-white transition-all flex items-center gap-1 bg-[#171717] hover:bg-[#202020] border border-[#2A2A2A] px-2 py-0.5 rounded-sm active:scale-95 cursor-pointer"
                   >
-                    <Download className="w-3.5 h-3.5 text-blue-400" /> ดาวน์โหลด .TXT
+                    <Download className="w-3.5 h-3.5 text-blue-400" /> .TXT
                   </button>
                 </div>
               </div>
-              <div className="text-white/70 text-xs sm:text-sm leading-relaxed whitespace-pre-wrap bg-white/[0.02] p-4 sm:p-5 border border-white/[0.06] rounded-[24px] min-h-[100px] max-h-[220px] overflow-y-auto font-sans">
+              <div className="text-zinc-300 text-xs sm:text-sm leading-relaxed whitespace-pre-wrap bg-[#171717] p-3 sm:p-3.5 border border-[#2A2A2A] rounded-md min-h-[90px] max-h-[180px] overflow-y-auto font-sans">
                 {product.description || "ไม่มีรายละเอียดสินค้าระบุไว้"}
               </div>
             </div>
           </div>
 
           {/* Action & Checkout Controls */}
-          <div className="mt-4 pt-4 border-t border-white/[0.08]">
+          <div className="mt-3 pt-3 border-t border-[#2A2A2A]">
             {!showConfirmPurchase ? (
-              <div className="space-y-4">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                  <label className="font-bold text-white text-xs sm:text-sm uppercase tracking-wider text-white/60">เลือกจำนวนชิ้น</label>
-                  <div className="flex items-center gap-2.5 p-1 rounded-full bg-white/[0.03] border border-white/[0.08]">
+              <div className="space-y-3">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                  <label className="font-bold text-xs uppercase tracking-wider text-zinc-400">เลือกจำนวนชิ้น</label>
+                  <div className="flex items-center gap-2 p-1 rounded-md bg-[#171717] border border-[#2A2A2A]">
                     <button
                       onClick={() => setPurchaseQuantity(Math.max(1, purchaseQuantity - 1))}
-                      className="w-9 h-9 rounded-full bg-white/[0.05] hover:bg-white/[0.12] border border-white/[0.1] flex items-center justify-center font-black text-lg text-white transition-all active:scale-90 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+                      className="w-7 h-7 rounded-sm bg-[#141414] hover:bg-[#202020] border border-[#2A2A2A] flex items-center justify-center font-black text-base text-white transition-all active:scale-90 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
                       disabled={purchaseQuantity <= 1}
                     >
                       -
@@ -193,12 +193,12 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ product, u
                         const val = parseInt(e.target.value);
                         if (!isNaN(val)) setPurchaseQuantity(Math.min(product.stock >= 999999 ? 999 : product.stock, Math.max(1, val)));
                       }}
-                      className="w-16 h-9 bg-transparent text-center font-mono font-black text-lg outline-none appearance-none m-0 text-white"
+                      className="w-14 h-7 bg-transparent text-center font-mono font-bold text-base outline-none appearance-none m-0 text-white"
                       disabled={product.stock === 0}
                     />
                     <button
                       onClick={() => setPurchaseQuantity(Math.min(product.stock >= 999999 ? 999 : product.stock, purchaseQuantity + 1))}
-                      className="w-9 h-9 rounded-full bg-white/[0.05] hover:bg-white/[0.12] border border-white/[0.1] flex items-center justify-center font-black text-lg text-white transition-all active:scale-90 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+                      className="w-7 h-7 rounded-sm bg-[#141414] hover:bg-[#202020] border border-[#2A2A2A] flex items-center justify-center font-black text-base text-white transition-all active:scale-90 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
                       disabled={product.stock === 0 || purchaseQuantity >= product.stock}
                     >
                       +
@@ -216,7 +216,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ product, u
                         confirmButtonText: 'เข้าสู่ระบบ',
                         showCancelButton: true,
                         cancelButtonText: 'ปิด',
-                        background: '#0c0c12',
+                        background: '#141414',
                         color: '#fff',
                         confirmButtonColor: '#2563eb'
                       }).then((result) => {
@@ -230,10 +230,10 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ product, u
                     setShowConfirmPurchase(true);
                   }}
                   disabled={product.stock <= 0}
-                  className={`w-full py-4 rounded-full text-sm font-black transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                  className={`w-full py-3 rounded-md text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
                     product.stock > 0 
-                      ? 'bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white shadow-lg shadow-blue-600/30 hover:shadow-blue-500/50 active:scale-[0.99]' 
-                      : 'bg-white/[0.05] text-white/30 border border-white/[0.05] cursor-not-allowed'
+                      ? 'bg-blue-600 hover:bg-blue-500 text-white active:scale-[0.99]' 
+                      : 'bg-[#171717] text-zinc-500 border border-[#2A2A2A] cursor-not-allowed'
                   }`}
                 >
                   <ShoppingCart className="w-4 h-4" />
@@ -244,24 +244,24 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ product, u
               <motion.div 
                 initial={{ opacity: 0, scale: 0.96 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="bg-blue-600/10 border border-blue-500/30 p-5 rounded-[26px] shadow-lg"
+                className="bg-[#171717] border border-[#2A2A2A] p-4 rounded-md"
               >
-                <div className="flex items-start gap-3.5 mb-4">
-                  <div className="w-10 h-10 flex items-center justify-center rounded-xl bg-blue-600/20 text-blue-400 shrink-0 border border-blue-500/30">
-                    <AlertCircle className="w-5 h-5" />
+                <div className="flex items-start gap-3 mb-3">
+                  <div className="w-8 h-8 flex items-center justify-center rounded-sm bg-blue-600/20 text-blue-400 shrink-0 border border-blue-500/30">
+                    <AlertCircle className="w-4 h-4" />
                   </div>
                   <div>
-                    <h3 className="font-black text-base text-white mb-1">ยืนยันการสั่งซื้อ</h3>
-                    <p className="text-white/70 text-xs sm:text-sm leading-relaxed">
-                      คุณกำลังสั่งซื้อ <span className="text-white font-bold">{product.name}</span> จำนวน <span className="text-blue-400 font-black">{purchaseQuantity}</span> ชิ้น ในราคารวม <span className="text-emerald-400 font-mono font-black">฿{((product.price || 0) * purchaseQuantity).toLocaleString()}</span>
+                    <h3 className="font-bold text-sm text-white mb-0.5">ยืนยันการสั่งซื้อ</h3>
+                    <p className="text-zinc-400 text-xs leading-relaxed">
+                      คุณกำลังสั่งซื้อ <span className="text-white font-bold">{product.name}</span> จำนวน <span className="text-blue-400 font-bold">{purchaseQuantity}</span> ชิ้น ในราคารวม <span className="text-white font-mono font-bold">฿{((product.price || 0) * purchaseQuantity).toLocaleString()}</span>
                     </p>
                   </div>
                 </div>
                 
-                <div className="flex items-center gap-3 w-full">
+                <div className="flex items-center gap-2.5 w-full">
                   <button 
                     onClick={() => setShowConfirmPurchase(false)}
-                    className="flex-1 py-3 bg-white/[0.05] border border-white/[0.1] hover:bg-white/[0.1] text-white font-bold transition-all text-xs rounded-full active:scale-95 cursor-pointer"
+                    className="flex-1 py-2.5 bg-[#141414] border border-[#2A2A2A] hover:bg-[#202020] text-zinc-300 font-bold transition-all text-xs rounded-md active:scale-95 cursor-pointer"
                   >
                     ยกเลิก
                   </button>
@@ -275,7 +275,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ product, u
                         setShowConfirmPurchase(false);
                       }
                     }}
-                    className="flex-1 py-3 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-black transition-all text-xs rounded-full shadow-lg shadow-blue-600/30 disabled:opacity-50 flex items-center justify-center gap-2 active:scale-95 cursor-pointer"
+                    className="flex-1 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold transition-all text-xs rounded-md disabled:opacity-50 flex items-center justify-center gap-2 active:scale-95 cursor-pointer"
                   >
                     {showConfirmPurchase === ('loading' as any) ? (
                       <><div className="w-3.5 h-3.5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div> กำลังทำรายการ...</>

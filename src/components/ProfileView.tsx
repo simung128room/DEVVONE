@@ -84,7 +84,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
     const displayId = (item.id || 'N/A').substring(0, 8).toUpperCase();
     
     return (
-      <div key={item.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-3.5 bg-white/[0.02] border border-white/[0.08] hover:border-white/20 transition-all rounded-2xl gap-3">
+      <div key={item.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-3.5 bg-[#171717] border border-[#2A2A2A] hover:border-[#383838] transition-all rounded-md gap-3">
         <div className="flex flex-col gap-1">
           <span className="text-xs sm:text-sm font-bold text-white tracking-wide truncate max-w-[200px] sm:max-w-[360px]">
             {type === 'purchase' ? item.productName : `เปิดใช้งานคีย์: ${item.key || 'ไม่ระบุ'}`}
@@ -117,13 +117,13 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-          className="relative overflow-hidden rounded-3xl border border-white/[0.08] bg-[#121316] shadow-xl flex flex-col md:flex-row mt-6"
+          className="relative overflow-hidden rounded-lg border border-[#2A2A2A] bg-[#141414] flex flex-col md:flex-row mt-6"
         >
           {/* Left Side: Avatar & Wallet Status */}
-          <div className="md:w-1/3 bg-[#16171b] p-6 sm:p-8 flex flex-col items-center border-b md:border-b-0 md:border-r border-white/[0.08] relative overflow-hidden">
+          <div className="md:w-1/3 bg-[#171717] p-5 sm:p-6 flex flex-col items-center border-b md:border-b-0 md:border-r border-[#2A2A2A] relative overflow-hidden">
             <div className="absolute -top-12 -right-12 w-40 h-40 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
             
-            <div className="w-24 h-24 p-1 mb-2 relative z-10 rounded-full overflow-hidden shadow-xl border border-white/20 bg-gradient-to-tr from-blue-600 to-cyan-400 group">
+            <div className="w-20 h-20 p-1 mb-2 relative z-10 rounded-full overflow-hidden border border-[#2A2A2A] bg-[#141414] group">
               <label className="cursor-pointer w-full h-full block relative" title="คลิกเพื่อเปลี่ยนรูปโปรไฟล์">
                 <input 
                   type="file" 
@@ -141,38 +141,38 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                 />
                 <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300 rounded-full">
                   {isUploadingAvatar ? (
-                    <RefreshCw className="w-6 h-6 text-white animate-spin" />
+                    <RefreshCw className="w-5 h-5 text-white animate-spin" />
                   ) : (
-                    <Camera className="w-6 h-6 text-white" />
+                    <Camera className="w-5 h-5 text-white" />
                   )}
                 </div>
               </label>
             </div>
-            <div className="text-[10px] text-white/40 mb-3 z-10 tracking-wider">คลิกที่รูปเพื่อแก้ไข</div>
+            <div className="text-[10px] text-white/40 mb-2 z-10 tracking-wider">คลิกที่รูปเพื่อแก้ไข</div>
             
-            <h3 className="text-lg sm:text-xl font-black text-white mb-1.5 text-center truncate w-full px-2 z-10">{username}</h3>
+            <h3 className="text-base sm:text-lg font-bold text-white mb-1 text-center truncate w-full px-2 z-10">{username}</h3>
             
-            <span className={`text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full mb-6 z-10 border ${
+            <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-md mb-4 z-10 border ${
               isAdminOrOwner 
-                ? "text-amber-400 bg-amber-500/10 border-amber-500/30 shadow-sm shadow-amber-500/20" 
+                ? "text-amber-400 bg-amber-500/10 border-amber-500/30" 
                 : "text-blue-400 bg-blue-500/10 border-blue-500/30"
             }`}>
               {role}
             </span>
             
             {/* Wallet Box */}
-            <div className="w-full bg-[#1b1c20] border border-white/[0.05] p-5 rounded-2xl flex flex-col items-center relative overflow-hidden shadow-md">
-              <div className="flex items-center gap-2 mb-1.5">
-                <Wallet className="w-4 h-4 text-blue-400" />
+            <div className="w-full bg-[#141414] border border-[#2A2A2A] p-4 rounded-lg flex flex-col items-center relative overflow-hidden">
+              <div className="flex items-center gap-1.5 mb-1">
+                <Wallet className="w-3.5 h-3.5 text-blue-400" />
                 <span className="text-zinc-400 text-[10px] font-bold uppercase tracking-wider">ยอดเงินคงเหลือ</span>
               </div>
-              <div className="text-3xl sm:text-4xl font-extrabold text-white mb-3 tracking-tight font-mono select-none">
-                <span className="text-sm font-bold text-blue-400 mr-1 font-sans">฿</span>
+              <div className="text-2xl sm:text-3xl font-extrabold text-white mb-2.5 tracking-tight font-mono select-none">
+                <span className="text-xs font-bold text-blue-400 mr-1 font-sans">฿</span>
                 {Math.floor(balance).toLocaleString()}
               </div>
               <button 
                 onClick={() => setActiveView('wallet')}
-                className="w-full bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white py-3 rounded-xl text-xs font-black uppercase tracking-wider transition-all duration-150 cursor-pointer shadow-lg shadow-blue-600/25 active:scale-95 flex items-center justify-center gap-1.5"
+                className="w-full bg-blue-600 hover:bg-blue-500 text-white py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all duration-150 cursor-pointer active:scale-95 flex items-center justify-center gap-1.5"
               >
                 <Wallet className="w-3.5 h-3.5" />
                 <span>+ เติมเงินทันที</span>
@@ -181,10 +181,10 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
           </div>
 
           {/* Right Side: Details, Forms, Quick Menus */}
-          <div className="md:w-2/3 p-6 sm:p-8 lg:p-10">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-lg sm:text-xl font-black text-white flex items-center gap-2.5">
-                <ShieldCheck className="w-5 h-5 text-blue-400"/> ข้อมูลส่วนตัว
+          <div className="md:w-2/3 p-5 sm:p-6 lg:p-8">
+            <div className="flex justify-between items-center mb-5">
+              <h2 className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-blue-400"/> ข้อมูลส่วนตัว
               </h2>
             </div>
 
@@ -196,14 +196,14 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
               const newUsername = formData.get('username') as string;
               
               if (!user) {
-                Swal.fire({ icon: 'error', title: 'ไม่พบข้อมูลผู้ใช้', text: 'กรุณาเข้าสู่ระบบก่อนอัพเดทโปรไฟล์', background: '#0c0c12', color: '#fff' });
+                Swal.fire({ icon: 'error', title: 'ไม่พบข้อมูลผู้ใช้', text: 'กรุณาเข้าสู่ระบบก่อนอัพเดทโปรไฟล์', background: '#141414', color: '#fff' });
                 return;
               }
 
               Swal.fire({
                 title: 'กำลังบันทึกข้อมูล...',
                 allowOutsideClick: false,
-                background: '#0c0c12',
+                background: '#141414',
                 color: '#fff',
                 didOpen: () => { Swal.showLoading(); }
               });
@@ -220,92 +220,92 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                 };
                 setUserPlan(newPlan);
                 if (clientIp) localStorage.setItem(`checker_userplan_${clientIp}`, JSON.stringify(newPlan));
-                Swal.fire({ icon: 'success', title: 'อัปเดตข้อมูลสำเร็จ', timer: 1500, showConfirmButton: false, background: '#0c0c12', color: '#fff' });
+                Swal.fire({ icon: 'success', title: 'อัปเดตข้อมูลสำเร็จ', timer: 1500, showConfirmButton: false, background: '#141414', color: '#fff' });
               } catch (err: any) {
                 Swal.fire({
                   icon: 'error',
                   title: 'อัปเดตไม่สำเร็จ',
                   text: err.response?.data?.error || err.message || 'เกิดข้อผิดพลาดในการบันทึกข้อมูล',
-                  background: '#0c0c12',
+                  background: '#141414',
                   color: '#fff'
                 });
               }
-            }} className="space-y-4 mb-8">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            }} className="space-y-3 mb-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="text-[11px] text-white/50 font-bold uppercase tracking-wider mb-2 block ml-1">ชื่อที่แสดง (Display Name)</label>
+                  <label className="text-[11px] text-zinc-400 font-bold uppercase tracking-wider mb-1.5 block ml-0.5">ชื่อที่แสดง (Display Name)</label>
                   <input 
                     name="username" 
                     type="text" 
                     defaultValue={username}
                     placeholder="ระบุชื่อที่ต้องการให้แสดง"
-                    className="w-full bg-white/[0.03] border border-white/[0.08] focus:border-blue-500 rounded-xl py-3 px-4 text-xs sm:text-sm text-white outline-none transition-all placeholder:text-white/20 font-medium" 
+                    className="w-full bg-[#171717] border border-[#2A2A2A] focus:border-blue-500 rounded-lg py-2.5 px-3.5 text-xs sm:text-sm text-white outline-none transition-all placeholder:text-zinc-600 font-medium" 
                   />
                 </div>
                 <div>
-                  <label className="text-[11px] text-white/50 font-bold uppercase tracking-wider mb-2 block ml-1">ชื่อ-นามสกุลจริง</label>
+                  <label className="text-[11px] text-zinc-400 font-bold uppercase tracking-wider mb-1.5 block ml-0.5">ชื่อ-นามสกุลจริง</label>
                   <input 
                     name="fullName" 
                     type="text" 
                     defaultValue={fullName !== '-' ? fullName : ''}
                     placeholder="ระบุชื่อ-นามสกุลจริงของคุณ"
-                    className="w-full bg-white/[0.03] border border-white/[0.08] focus:border-blue-500 rounded-xl py-3 px-4 text-xs sm:text-sm text-white outline-none transition-all placeholder:text-white/20 font-medium" 
+                    className="w-full bg-[#171717] border border-[#2A2A2A] focus:border-blue-500 rounded-lg py-2.5 px-3.5 text-xs sm:text-sm text-white outline-none transition-all placeholder:text-zinc-600 font-medium" 
                   />
                 </div>
               </div>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="text-[11px] text-white/50 font-bold uppercase tracking-wider mb-2 block ml-1">สมัครสมาชิกเมื่อ</label>
-                  <div className="w-full bg-white/[0.02] border border-white/[0.06] rounded-xl py-3 px-4 text-xs sm:text-sm text-white/50 cursor-not-allowed flex items-center gap-2.5 font-medium">
-                    <Calendar className="w-4 h-4 text-white/30 shrink-0" /> {registeredAt}
+                  <label className="text-[11px] text-zinc-400 font-bold uppercase tracking-wider mb-1.5 block ml-0.5">สมัครสมาชิกเมื่อ</label>
+                  <div className="w-full bg-[#171717] border border-[#2A2A2A] rounded-lg py-2.5 px-3.5 text-xs sm:text-sm text-zinc-400 cursor-not-allowed flex items-center gap-2 font-medium">
+                    <Calendar className="w-3.5 h-3.5 text-zinc-500 shrink-0" /> {registeredAt}
                   </div>
                 </div>
                 <div>
-                  <label className="text-[11px] text-white/50 font-bold uppercase tracking-wider mb-2 block ml-1">อีเมลผู้ใช้งาน</label>
-                  <div className="w-full bg-white/[0.02] border border-white/[0.06] rounded-xl py-3 px-4 text-xs sm:text-sm text-white/60 cursor-not-allowed flex items-center justify-between gap-2 overflow-hidden font-medium">
-                    <div className="flex items-center gap-2.5 truncate">
-                      <Mail className="w-4 h-4 text-white/30 shrink-0" />
+                  <label className="text-[11px] text-zinc-400 font-bold uppercase tracking-wider mb-1.5 block ml-0.5">อีเมลผู้ใช้งาน</label>
+                  <div className="w-full bg-[#171717] border border-[#2A2A2A] rounded-lg py-2.5 px-3.5 text-xs sm:text-sm text-zinc-300 cursor-not-allowed flex items-center justify-between gap-2 overflow-hidden font-medium">
+                    <div className="flex items-center gap-2 truncate">
+                      <Mail className="w-3.5 h-3.5 text-zinc-500 shrink-0" />
                       <span className="truncate">{email}</span>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="flex justify-end pt-2">
-                <button type="submit" className="bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-black py-2.5 px-6 transition-all text-xs rounded-full cursor-pointer uppercase tracking-wider shadow-lg shadow-blue-500/20 active:scale-95">
+              <div className="flex justify-end pt-1">
+                <button type="submit" className="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-5 transition-all text-xs rounded-lg cursor-pointer uppercase tracking-wider active:scale-95">
                   บันทึกการแก้ไข
                 </button>
               </div>
             </form>
 
             {/* Quick Menu Shortcuts */}
-            <div className="mb-8">
-              <h3 className="text-[11px] text-white/50 font-bold uppercase tracking-wider mb-3.5 ml-1">เมนูด่วน</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <button type="button" onClick={() => setActiveView('history')} className="flex items-center justify-between p-3.5 bg-white/[0.02] border border-white/[0.08] hover:border-blue-500/40 hover:bg-white/[0.04] transition-all group rounded-2xl cursor-pointer">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-xl">
-                      <History className="w-4 h-4" />
+            <div className="mb-6">
+              <h3 className="text-[11px] text-zinc-400 font-bold uppercase tracking-wider mb-2.5 ml-0.5">เมนูด่วน</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <button type="button" onClick={() => setActiveView('history')} className="flex items-center justify-between p-3 bg-[#171717] border border-[#2A2A2A] hover:border-[#383838] transition-all group rounded-lg cursor-pointer">
+                  <div className="flex items-center gap-2.5">
+                    <div className="p-1.5 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-md">
+                      <History className="w-3.5 h-3.5" />
                     </div>
-                    <span className="text-xs sm:text-sm font-bold text-white/80 group-hover:text-white transition-colors">ประวัติการสั่งซื้อ</span>
+                    <span className="text-xs sm:text-sm font-bold text-zinc-200 group-hover:text-white transition-colors">ประวัติการสั่งซื้อ</span>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-white/30 group-hover:text-blue-400 group-hover:translate-x-1 transition-all" />
+                  <ChevronRight className="w-3.5 h-3.5 text-zinc-500 group-hover:text-zinc-300 group-hover:translate-x-0.5 transition-all" />
                 </button>
 
-                <button type="button" onClick={() => setActiveView('redeem')} className="flex items-center justify-between p-3.5 bg-white/[0.02] border border-white/[0.08] hover:border-blue-500/40 hover:bg-white/[0.04] transition-all group rounded-2xl cursor-pointer">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-xl">
-                      <Key className="w-4 h-4" />
+                <button type="button" onClick={() => setActiveView('redeem')} className="flex items-center justify-between p-3 bg-[#171717] border border-[#2A2A2A] hover:border-[#383838] transition-all group rounded-lg cursor-pointer">
+                  <div className="flex items-center gap-2.5">
+                    <div className="p-1.5 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-md">
+                      <Key className="w-3.5 h-3.5" />
                     </div>
-                    <span className="text-xs sm:text-sm font-bold text-white/80 group-hover:text-white transition-colors">เปิดใช้งานคีย์</span>
+                    <span className="text-xs sm:text-sm font-bold text-zinc-200 group-hover:text-white transition-colors">เปิดใช้งานคีย์</span>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-white/30 group-hover:text-blue-400 group-hover:translate-x-1 transition-all" />
+                  <ChevronRight className="w-3.5 h-3.5 text-zinc-500 group-hover:text-zinc-300 group-hover:translate-x-0.5 transition-all" />
                 </button>
               </div>
 
               {user && (
-                <div className="mt-3">
+                <div className="mt-2.5">
                   <button 
                     type="button" 
                     onClick={() => { 
@@ -314,10 +314,10 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonColor: '#ef4444',
-                        cancelButtonColor: '#18181b',
+                        cancelButtonColor: '#171717',
                         cancelButtonText: 'ยกเลิก',
                         confirmButtonText: 'ออกจากระบบ',
-                        background: '#0c0c12',
+                        background: '#141414',
                         color: '#fff'
                       }).then((result) => {
                         if (result.isConfirmed) {
@@ -325,36 +325,36 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                         }
                       });
                     }} 
-                    className="w-full flex items-center justify-between p-3.5 bg-rose-500/[0.03] border border-rose-500/20 hover:border-rose-500/40 hover:bg-rose-500/10 transition-all group rounded-2xl cursor-pointer"
+                    className="w-full flex items-center justify-between p-3 bg-rose-500/[0.03] border border-rose-500/20 hover:border-rose-500/40 hover:bg-rose-500/10 transition-all group rounded-lg cursor-pointer"
                   >
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-rose-500/10 text-rose-400 border border-rose-500/20 rounded-xl">
-                        <LogOut className="w-4 h-4" />
+                    <div className="flex items-center gap-2.5">
+                      <div className="p-1.5 bg-rose-500/10 text-rose-400 border border-rose-500/20 rounded-md">
+                        <LogOut className="w-3.5 h-3.5" />
                       </div>
                       <span className="text-xs sm:text-sm font-bold text-rose-300 group-hover:text-rose-200 transition-colors">ออกจากระบบ</span>
                     </div>
-                    <ChevronRight className="w-4 h-4 text-rose-400/40 group-hover:text-rose-300 group-hover:translate-x-1 transition-all" />
+                    <ChevronRight className="w-3.5 h-3.5 text-rose-400/40 group-hover:text-rose-300 group-hover:translate-x-0.5 transition-all" />
                   </button>
                 </div>
               )}
             </div>
 
             {/* Recent Purchases List */}
-            <div className="border-t border-white/[0.08] pt-6">
-              <div className="flex items-center justify-between mb-3 px-1">
-                <h3 className="text-[11px] text-white/50 font-bold uppercase tracking-wider">รายการสินค้าที่สั่งซื้อล่าสุด</h3>
+            <div className="border-t border-[#2A2A2A] pt-5">
+              <div className="flex items-center justify-between mb-2.5 px-0.5">
+                <h3 className="text-[11px] text-zinc-400 font-bold uppercase tracking-wider">รายการสินค้าที่สั่งซื้อล่าสุด</h3>
                 <button onClick={() => setActiveView('history')} className="text-xs font-bold text-blue-400 hover:text-blue-300 hover:underline transition-colors cursor-pointer">
                   ดูทั้งหมด
                 </button>
               </div>
               
               {purchaseHistory.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-6 bg-white/[0.01] border border-white/[0.06] border-dashed text-white/40 rounded-2xl">
-                  <Package className="w-6 h-6 opacity-30 mb-2 text-white/40" />
+                <div className="flex flex-col items-center justify-center py-5 bg-[#171717] border border-[#2A2A2A] text-zinc-500 rounded-lg">
+                  <Package className="w-5 h-5 opacity-30 mb-1.5 text-zinc-500" />
                   <span className="text-xs font-medium">ยังไม่มีประวัติการสั่งซื้อ</span>
                 </div>
               ) : (
-                <div className="flex flex-col gap-2.5">
+                <div className="flex flex-col gap-2">
                   {purchaseHistory.slice(0, 3).map(item => renderHistoryItem(item, 'purchase'))}
                 </div>
               )}

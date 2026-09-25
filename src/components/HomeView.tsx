@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import axios from "axios";
 import { Product, SiteStats, Category } from "../types";
+import { ProductCard } from "./ProductCard";
 import {
   Users,
   ShoppingBag,
@@ -9,6 +10,9 @@ import {
   ArrowRight,
   CheckCircle2,
   Clock,
+  Sparkles,
+  ShoppingCart,
+  Package,
 } from "lucide-react";
 import { generateGradient } from "../utils";
 
@@ -31,7 +35,7 @@ const renderServiceIcon = (name: string, imageUrl?: string) => {
       <img
         src={imageUrl}
         alt={name}
-        className="w-12 h-12 rounded-2xl object-cover shrink-0 border border-white/[0.08]"
+        className="w-11 h-11 rounded-lg object-cover shrink-0 border border-white/[0.08]"
         loading="lazy"
         referrerPolicy="no-referrer"
         onError={(e) => {
@@ -46,8 +50,8 @@ const renderServiceIcon = (name: string, imageUrl?: string) => {
   // Nord VPN
   if (lower.includes("nord") || lower.includes("vpn")) {
     return (
-      <div className="w-12 h-12 rounded-2xl bg-[#4460ef] flex items-center justify-center shrink-0 shadow-md">
-        <svg viewBox="0 0 24 24" className="w-6 h-6 text-white fill-current">
+      <div className="w-11 h-11 rounded-lg bg-[#4460ef] flex items-center justify-center shrink-0">
+        <svg viewBox="0 0 24 24" className="w-5 h-5 text-white fill-current">
           <path d="M12 3L2 19h20L12 3zm0 4.5l6.5 10.5H5.5L12 7.5z" />
         </svg>
       </div>
@@ -57,7 +61,7 @@ const renderServiceIcon = (name: string, imageUrl?: string) => {
   // Claude Pro / Anthropic
   if (lower.includes("claude") || lower.includes("anthropic")) {
     return (
-      <div className="w-12 h-12 rounded-2xl bg-[#d97746] flex items-center justify-center shrink-0 shadow-md text-white font-black text-xl">
+      <div className="w-11 h-11 rounded-lg bg-[#d97746] flex items-center justify-center shrink-0 text-white font-black text-lg">
         ✶
       </div>
     );
@@ -66,8 +70,8 @@ const renderServiceIcon = (name: string, imageUrl?: string) => {
   // Netflix
   if (lower.includes("netflix")) {
     return (
-      <div className="w-12 h-12 rounded-2xl bg-[#000000] border border-white/10 flex items-center justify-center shrink-0 shadow-md">
-        <span className="text-[#e50914] font-black text-2xl font-sans tracking-tighter">
+      <div className="w-11 h-11 rounded-lg bg-[#000000] border border-white/10 flex items-center justify-center shrink-0">
+        <span className="text-[#e50914] font-black text-xl font-sans tracking-tighter">
           N
         </span>
       </div>
@@ -77,8 +81,8 @@ const renderServiceIcon = (name: string, imageUrl?: string) => {
   // WeTV
   if (lower.includes("wetv")) {
     return (
-      <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center shrink-0 shadow-md">
-        <div className="w-0 h-0 border-t-[8px] border-t-transparent border-b-[8px] border-b-transparent border-l-[14px] border-l-[#00b074] ml-1" />
+      <div className="w-11 h-11 rounded-lg bg-white flex items-center justify-center shrink-0">
+        <div className="w-0 h-0 border-t-[7px] border-t-transparent border-b-[7px] border-b-transparent border-l-[12px] border-l-[#00b074] ml-1" />
       </div>
     );
   }
@@ -86,7 +90,7 @@ const renderServiceIcon = (name: string, imageUrl?: string) => {
   // Bilibili
   if (lower.includes("bilibili") || lower.includes("bili")) {
     return (
-      <div className="w-12 h-12 rounded-2xl bg-[#23ade5] flex items-center justify-center shrink-0 shadow-md text-white font-bold text-lg">
+      <div className="w-11 h-11 rounded-lg bg-[#23ade5] flex items-center justify-center shrink-0 text-white font-bold text-base">
         📺
       </div>
     );
@@ -95,7 +99,7 @@ const renderServiceIcon = (name: string, imageUrl?: string) => {
   // iQIYI
   if (lower.includes("iqiyi")) {
     return (
-      <div className="w-12 h-12 rounded-2xl bg-[#00c250] flex items-center justify-center shrink-0 shadow-md text-white font-bold text-xs tracking-tighter">
+      <div className="w-11 h-11 rounded-lg bg-[#00c250] flex items-center justify-center shrink-0 text-white font-bold text-xs tracking-tighter">
         iQIYI
       </div>
     );
@@ -104,7 +108,7 @@ const renderServiceIcon = (name: string, imageUrl?: string) => {
   // Discord / Nitro
   if (lower.includes("nitro") || lower.includes("discord")) {
     return (
-      <div className="w-12 h-12 rounded-2xl bg-[#5865F2] flex items-center justify-center shrink-0 shadow-md text-white font-bold text-xs">
+      <div className="w-11 h-11 rounded-lg bg-[#5865F2] flex items-center justify-center shrink-0 text-white font-bold text-xs">
         Nitro
       </div>
     );
@@ -113,8 +117,8 @@ const renderServiceIcon = (name: string, imageUrl?: string) => {
   // YouTube / Premium
   if (lower.includes("youtube") || lower.includes("yt")) {
     return (
-      <div className="w-12 h-12 rounded-2xl bg-[#ff0000] flex items-center justify-center shrink-0 shadow-md">
-        <div className="w-0 h-0 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent border-l-[10px] border-l-white ml-0.5" />
+      <div className="w-11 h-11 rounded-lg bg-[#ff0000] flex items-center justify-center shrink-0">
+        <div className="w-0 h-0 border-t-[5px] border-t-transparent border-b-[5px] border-b-transparent border-l-[9px] border-l-white ml-0.5" />
       </div>
     );
   }
@@ -122,7 +126,7 @@ const renderServiceIcon = (name: string, imageUrl?: string) => {
   // Spotify
   if (lower.includes("spotify")) {
     return (
-      <div className="w-12 h-12 rounded-2xl bg-[#1db954] flex items-center justify-center shrink-0 shadow-md text-black font-black text-sm">
+      <div className="w-11 h-11 rounded-lg bg-[#1db954] flex items-center justify-center shrink-0 text-black font-black text-sm">
         ●●●
       </div>
     );
@@ -131,7 +135,7 @@ const renderServiceIcon = (name: string, imageUrl?: string) => {
   // Fallback: Elegant colored monogram squircle
   return (
     <div
-      className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 text-white font-bold text-base shadow-md"
+      className="w-11 h-11 rounded-lg flex items-center justify-center shrink-0 text-white font-bold text-base"
       style={{ background: generateGradient(name) }}
     >
       {(name[0] || "P").toUpperCase()}
@@ -452,7 +456,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
         {/* ── 1. Hero Banner Carousel ── */}
         <section className="relative w-full">
-          <div className="relative aspect-[16/9] sm:aspect-[21/9] w-full rounded-[26px] overflow-hidden border border-[#2A2A2A] bg-[#141414] group">
+          <div className="relative aspect-[16/9] sm:aspect-[21/9] w-full rounded-lg overflow-hidden border border-[#2A2A2A] bg-[#141414] group">
             {banners.map((bannerUrl, idx) => (
               <div
                 key={idx}
@@ -474,17 +478,17 @@ export const HomeView: React.FC<HomeViewProps> = ({
               <>
                 <button
                   onClick={handlePrevBanner}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/60 hover:bg-black/90 text-white/90 transition-all flex items-center justify-center z-20 cursor-pointer opacity-0 group-hover:opacity-100 border border-[#2A2A2A]"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-md bg-black/60 hover:bg-black/90 text-white/90 transition-all flex items-center justify-center z-20 cursor-pointer opacity-0 group-hover:opacity-100 border border-[#2A2A2A]"
                   aria-label="Previous Banner"
                 >
-                  <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <ChevronLeft className="w-4 h-4" />
                 </button>
                 <button
                   onClick={handleNextBanner}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/60 hover:bg-black/90 text-white/90 transition-all flex items-center justify-center z-20 cursor-pointer opacity-0 group-hover:opacity-100 border border-[#2A2A2A]"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-md bg-black/60 hover:bg-black/90 text-white/90 transition-all flex items-center justify-center z-20 cursor-pointer opacity-0 group-hover:opacity-100 border border-[#2A2A2A]"
                   aria-label="Next Banner"
                 >
-                  <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <ChevronRight className="w-4 h-4" />
                 </button>
               </>
             )}
@@ -502,7 +506,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   }}
                   className={`transition-all duration-300 rounded-full cursor-pointer ${
                     dotIdx === currentBanner
-                      ? "w-7 h-1.5 bg-blue-500"
+                      ? "w-6 h-1.5 bg-blue-500"
                       : "w-1.5 h-1.5 bg-zinc-700 hover:bg-zinc-500"
                   }`}
                   aria-label={`Slide ${dotIdx + 1}`}
@@ -512,72 +516,72 @@ export const HomeView: React.FC<HomeViewProps> = ({
           )}
         </section>
 
-        {/* ── 2. สถิติการใช้งาน (Usage Statistics Card - Layered Cards) ── */}
-        <section className="bg-[#141414] border border-[#2A2A2A] rounded-[26px] p-5 sm:p-6">
+        {/* ── 2. สถิติการใช้งาน (Usage Statistics Card) ── */}
+        <section className="bg-[#141414] border border-[#2A2A2A] rounded-lg p-4 sm:p-5">
           {/* Header */}
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-3.5">
             <div>
-              <h2 className="text-base sm:text-lg font-bold text-white tracking-tight">
+              <h2 className="text-sm sm:text-base font-bold text-white tracking-tight">
                 สถิติการใช้งาน
               </h2>
-              <p className="text-xs sm:text-sm text-zinc-400 mt-0.5">ข้อมูลจริงจากระบบ</p>
+              <p className="text-xs text-zinc-400 mt-0.5">ข้อมูลจริงจากระบบ</p>
             </div>
-            <span className="px-3.5 py-1.5 rounded-full bg-[#171717] border border-[#2A2A2A] text-xs font-medium text-zinc-300">
+            <span className="px-2.5 py-1 rounded-md bg-[#171717] border border-[#2A2A2A] text-[11px] font-medium text-zinc-300">
               อัปเดตเรียลไทม์
             </span>
           </div>
 
           {/* 2 Stat Rows (Inner Cards) */}
-          <div className="space-y-3">
+          <div className="space-y-2.5">
             {/* Stat 1: สมาชิกทั้งหมด */}
-            <div className="flex items-center justify-between p-4 sm:p-5 rounded-[20px] bg-[#171717] border border-[#2A2A2A] hover:border-[#383838] transition-colors">
-              <div className="flex items-center gap-3.5 sm:gap-4">
-                <div className="w-12 h-12 rounded-[18px] bg-white flex items-center justify-center text-zinc-950 shrink-0">
-                  <Users className="w-6 h-6 text-zinc-950" strokeWidth={2.2} />
+            <div className="flex items-center justify-between p-3.5 sm:p-4 rounded-md bg-[#171717] border border-[#2A2A2A] hover:border-[#383838] transition-colors">
+              <div className="flex items-center gap-3 sm:gap-3.5">
+                <div className="w-9 h-9 rounded-md bg-white flex items-center justify-center text-zinc-950 shrink-0">
+                  <Users className="w-4 h-4 text-zinc-950" strokeWidth={2.2} />
                 </div>
                 <div>
-                  <div className="text-sm sm:text-base font-bold text-white leading-snug">
+                  <div className="text-xs sm:text-sm font-bold text-white leading-snug">
                     สมาชิกทั้งหมด
                   </div>
-                  <div className="text-xs text-zinc-400 mt-0.5">ผู้ใช้งาน</div>
+                  <div className="text-[11px] text-zinc-400 mt-0.5">ผู้ใช้งาน</div>
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-none">
+                <div className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-none">
                   {totalMembers.toLocaleString()}
                 </div>
-                <div className="text-xs text-zinc-400 font-normal text-right mt-1.5">คน</div>
+                <div className="text-[11px] text-zinc-400 font-normal text-right mt-1">คน</div>
               </div>
             </div>
 
             {/* Stat 2: คำสั่งซื้อสะสม */}
-            <div className="flex items-center justify-between p-4 sm:p-5 rounded-[20px] bg-[#171717] border border-[#2A2A2A] hover:border-[#383838] transition-colors">
-              <div className="flex items-center gap-3.5 sm:gap-4">
-                <div className="w-12 h-12 rounded-[18px] bg-white flex items-center justify-center text-zinc-950 shrink-0">
-                  <ShoppingBag className="w-6 h-6 text-zinc-950" strokeWidth={2.2} />
+            <div className="flex items-center justify-between p-3.5 sm:p-4 rounded-md bg-[#171717] border border-[#2A2A2A] hover:border-[#383838] transition-colors">
+              <div className="flex items-center gap-3 sm:gap-3.5">
+                <div className="w-9 h-9 rounded-md bg-white flex items-center justify-center text-zinc-950 shrink-0">
+                  <ShoppingBag className="w-4 h-4 text-zinc-950" strokeWidth={2.2} />
                 </div>
                 <div>
-                  <div className="text-sm sm:text-base font-bold text-white leading-snug">
+                  <div className="text-xs sm:text-sm font-bold text-white leading-snug">
                     คำสั่งซื้อสะสม
                   </div>
-                  <div className="text-xs text-zinc-400 mt-0.5">ทั้งหมด</div>
+                  <div className="text-[11px] text-zinc-400 mt-0.5">ทั้งหมด</div>
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-none">
+                <div className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-none">
                   {totalSales.toLocaleString()}
                 </div>
-                <div className="text-xs text-zinc-400 font-normal text-right mt-1.5">รายการ</div>
+                <div className="text-[11px] text-zinc-400 font-normal text-right mt-1">รายการ</div>
               </div>
             </div>
           </div>
         </section>
 
         {/* ── 3. สินค้ายอดนิยม (Popular Products) ── */}
-        <section className="space-y-3.5">
+        <section className="space-y-3">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-lg sm:text-xl font-bold text-white tracking-tight">
+              <h2 className="text-base sm:text-lg font-bold text-white tracking-tight">
                 สินค้ายอดนิยม
               </h2>
               <p className="text-xs text-zinc-400 mt-0.5">สินค้าขายดีที่ได้รับความนิยมสูงสุด</p>
@@ -587,100 +591,39 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 setActiveView("categories");
                 window.scrollTo({ top: 0, behavior: "smooth" });
               }}
-              className="px-3.5 py-1.5 rounded-full bg-[#171717] border border-[#2A2A2A] text-xs font-medium text-zinc-300 hover:text-white hover:border-[#383838] transition-colors cursor-pointer flex items-center gap-1"
+              className="px-3 py-1.5 rounded-md bg-[#171717] border border-[#2A2A2A] text-xs font-medium text-zinc-300 hover:text-white hover:border-[#383838] transition-colors cursor-pointer flex items-center gap-1"
             >
               <span>ดูทั้งหมด</span>
               <ChevronRight className="w-3.5 h-3.5" />
             </button>
           </div>
 
-          {/* Cards Grid: 2 columns on mobile, 3-4 columns on desktop */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-            {popularProducts.map((product) => {
-              const isOutOfStock = product.stock <= 0;
-              return (
-                <div
-                  key={product.id}
-                  onClick={() => onProductClick(product.id)}
-                  className="group bg-[#141414] border border-[#2A2A2A] hover:border-[#383838] rounded-[22px] overflow-hidden flex flex-col transition-all duration-200 cursor-pointer"
-                >
-                  {/* Thumbnail Image with HOT badge */}
-                  <div className="relative aspect-[16/10] w-full bg-[#171717] overflow-hidden">
-                    {product.imageUrl ? (
-                      <img
-                        src={product.imageUrl}
-                        alt={product.name}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        loading="lazy"
-                        referrerPolicy="no-referrer"
-                      />
-                    ) : (
-                      <div
-                        className="w-full h-full flex items-center justify-center"
-                        style={{ background: generateGradient(product.name) }}
-                      >
-                        <span className="text-2xl font-black text-white opacity-80">
-                          {(product.name[0] || "P").toUpperCase()}
-                        </span>
-                      </div>
-                    )}
-
-                    {/* Red HOT Badge */}
-                    <div className="absolute top-2.5 right-2.5 z-10">
-                      <span className="bg-[#e50914] text-white text-[10px] font-black uppercase px-2 py-0.5 rounded-md tracking-wider">
-                        HOT
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Body Content */}
-                  <div className="p-3.5 sm:p-4 flex flex-col flex-1 justify-between">
-                    <div>
-                      <h3 className="text-sm font-bold text-white truncate leading-snug group-hover:text-blue-400 transition-colors">
-                        {product.name}
-                      </h3>
-                      <p className="text-[11px] text-zinc-400 mt-1 truncate">
-                        หมวดหมู่: {product.category || "General"}
-                      </p>
-                    </div>
-
-                    {/* Footer Row: Stock Left | Price Right with Blue Baht symbol */}
-                    <div className="flex items-center justify-between mt-3 pt-2.5 border-t border-[#2A2A2A] text-xs">
-                      <span
-                        className={
-                          isOutOfStock
-                            ? "text-zinc-500 font-medium"
-                            : "text-zinc-400 font-medium"
-                        }
-                      >
-                        {isOutOfStock ? "สินค้าหมด" : `คงเหลือ ${product.stock} ชิ้น`}
-                      </span>
-                      <div className="text-base sm:text-lg font-extrabold text-white font-sans">
-                        {product.price.toLocaleString()}{" "}
-                        <span className="text-blue-500 font-bold">฿</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+          {/* Cards Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
+            {popularProducts.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                onClick={onProductClick}
+              />
+            ))}
           </div>
         </section>
 
-        {/* ── 4. รายการซื้อสินค้าล่าสุด (Latest Purchases Feed - Layered Design) ── */}
-        <section className="bg-[#141414] border border-[#2A2A2A] rounded-[26px] p-5 sm:p-6">
+        {/* ── 4. รายการซื้อสินค้าล่าสุด (Latest Purchases Feed) ── */}
+        <section className="bg-[#141414] border border-[#2A2A2A] rounded-lg p-4 sm:p-5">
           {/* Header */}
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2.5">
-              <span className="relative flex h-2.5 w-2.5">
+          <div className="flex items-center justify-between mb-3.5">
+            <div className="flex items-center gap-2">
+              <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
               </span>
               <div>
-                <h2 className="text-base sm:text-lg font-bold text-white tracking-tight">
+                <h2 className="text-sm sm:text-base font-bold text-white tracking-tight">
                   รายการซื้อสินค้าล่าสุด
                 </h2>
-                <p className="text-xs sm:text-sm text-zinc-400 mt-0.5">อัปเดตคำสั่งซื้อล่าสุดแบบเรียลไทม์</p>
+                <p className="text-xs text-zinc-400 mt-0.5">อัปเดตคำสั่งซื้อล่าสุดแบบเรียลไทม์</p>
               </div>
             </div>
             {user ? (
@@ -689,19 +632,19 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   setActiveView("order_history");
                   window.scrollTo({ top: 0, behavior: "smooth" });
                 }}
-                className="px-3.5 py-1.5 rounded-full bg-[#171717] border border-[#2A2A2A] text-xs font-medium text-zinc-300 hover:text-white hover:border-[#383838] transition-colors cursor-pointer"
+                className="px-2.5 py-1 rounded-md bg-[#171717] border border-[#2A2A2A] text-xs font-medium text-zinc-300 hover:text-white hover:border-[#383838] transition-colors cursor-pointer"
               >
                 ประวัติของฉัน
               </button>
             ) : (
-              <span className="px-3.5 py-1.5 rounded-full bg-[#171717] border border-[#2A2A2A] text-xs font-medium text-zinc-300">
+              <span className="px-2.5 py-1 rounded-md bg-[#171717] border border-[#2A2A2A] text-[11px] font-medium text-zinc-300">
                 อัปเดตเรียลไทม์
               </span>
             )}
           </div>
 
-          {/* List of recent purchases (Inner Cards) */}
-          <div className="space-y-2.5">
+          {/* List of recent purchases */}
+          <div className="space-y-2">
             {recentPurchases.map((purchase) => {
               const hasProductLink = Boolean(purchase.productId);
               return (
@@ -712,44 +655,44 @@ export const HomeView: React.FC<HomeViewProps> = ({
                       onProductClick(purchase.productId);
                     }
                   }}
-                  className={`flex items-center justify-between p-3.5 sm:p-4 rounded-[20px] bg-[#171717] border border-[#2A2A2A] hover:border-[#383838] transition-colors ${
+                  className={`flex items-center justify-between p-3 rounded-md bg-[#171717] border border-[#2A2A2A] hover:border-[#383838] transition-colors ${
                     hasProductLink ? "cursor-pointer group" : ""
                   }`}
                 >
-                  <div className="flex items-center gap-3.5 sm:gap-4 min-w-0">
-                    {/* Squircle Brand Logo */}
+                  <div className="flex items-center gap-3 min-w-0">
+                    {/* Brand Logo */}
                     {renderServiceIcon(purchase.productName, purchase.imageUrl)}
 
                     <div className="min-w-0">
-                      <h3 className="text-sm sm:text-base font-bold text-white truncate group-hover:text-blue-400 transition-colors">
+                      <h3 className="text-xs sm:text-sm font-bold text-white truncate group-hover:text-blue-400 transition-colors">
                         {purchase.productName}
                       </h3>
-                      <div className="flex items-center gap-2 mt-0.5 text-xs text-zinc-400">
+                      <div className="flex items-center gap-1.5 mt-0.5 text-[11px] text-zinc-400">
                         <span className="text-zinc-300 font-medium">
                           คุณ {purchase.username}
                         </span>
                         <span className="text-zinc-600">•</span>
-                        <span className="text-zinc-400 flex items-center gap-1 text-[11px]">
-                          <Clock className="w-3 h-3 text-zinc-500" />
+                        <span className="text-zinc-400 flex items-center gap-1">
+                          <Clock className="w-2.5 h-2.5 text-zinc-500" />
                           {formatTimeAgo(purchase.date)}
                         </span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3 shrink-0 ml-3 text-right">
+                  <div className="flex items-center gap-2.5 shrink-0 ml-2 text-right">
                     <div>
-                      <div className="text-base sm:text-xl font-extrabold text-white tracking-tight leading-none">
+                      <div className="text-sm sm:text-base font-extrabold text-white tracking-tight leading-none">
                         {purchase.price.toLocaleString()}{" "}
                         <span className="text-blue-500 font-bold">฿</span>
                       </div>
-                      <div className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 mt-1">
+                      <div className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-sm text-[9px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 mt-0.5">
                         <CheckCircle2 className="w-2.5 h-2.5" />
                         สำเร็จ
                       </div>
                     </div>
                     {hasProductLink && (
-                      <ChevronRight className="w-4 h-4 text-zinc-500 group-hover:text-zinc-300 transition-colors" />
+                      <ChevronRight className="w-3.5 h-3.5 text-zinc-500 group-hover:text-zinc-300 transition-colors" />
                     )}
                   </div>
                 </div>
@@ -758,14 +701,14 @@ export const HomeView: React.FC<HomeViewProps> = ({
           </div>
         </section>
 
-        {/* Bottom Quick Button to Browse Store & Categories */}
+        {/* Bottom Quick Button */}
         <div className="pt-2 pb-4 flex justify-center">
           <button
             onClick={() => {
               setActiveView("categories");
               window.scrollTo({ top: 0, behavior: "smooth" });
             }}
-            className="w-full sm:w-auto px-8 py-3.5 rounded-[22px] bg-[#141414] hover:bg-[#171717] border border-[#2A2A2A] hover:border-[#383838] text-sm font-semibold text-zinc-200 hover:text-white transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+            className="w-full sm:w-auto px-6 py-2.5 rounded-md bg-[#141414] hover:bg-[#171717] border border-[#2A2A2A] hover:border-[#383838] text-xs sm:text-sm font-semibold text-zinc-200 hover:text-white transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98"
           >
             <span>ดูสินค้าและหมวดหมู่ทั้งหมดในร้าน</span>
             <ArrowRight className="w-4 h-4 text-blue-400" />

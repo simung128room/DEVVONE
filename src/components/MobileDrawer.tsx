@@ -182,7 +182,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
             aria-hidden="true"
           />
 
-          {/* Minimalist Side Drawer: No harsh boxes, soft curved pill theme */}
+          {/* Minimalist Side Drawer: Clean dark theme with subtle curves */}
           <motion.div
             ref={drawerRef}
             initial={{ x: "100%", opacity: 0.5 }}
@@ -194,10 +194,10 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
               stiffness: 350,
               mass: 0.75,
             }}
-            className="fixed top-2 bottom-2 right-2 w-[86vw] max-w-[320px] z-[70] bg-[#0c0d16]/95 backdrop-blur-2xl border border-white/10 rounded-[36px] shadow-2xl flex flex-col justify-between select-none overflow-hidden"
+            className="fixed top-2 bottom-2 right-2 w-[86vw] max-w-[320px] z-[70] bg-[#141414] border border-[#2A2A2A] rounded-lg shadow-2xl flex flex-col justify-between select-none overflow-hidden"
           >
-            {/* Top Bar inside Drawer: Logo & Rounded Close Button */}
-            <div className="p-5 flex items-center justify-between shrink-0">
+            {/* Top Bar inside Drawer: Logo & Close Button */}
+            <div className="p-4 flex items-center justify-between shrink-0 border-b border-[#2A2A2A]">
               <div
                 onClick={() => {
                   setActiveView("home");
@@ -206,33 +206,33 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
                 }}
                 className="flex items-center cursor-pointer hover:opacity-90 transition-opacity"
               >
-                <DevLogo className="h-10 w-auto text-white" />
+                <DevLogo className="h-9 w-auto text-white" />
               </div>
 
               <button
                 onClick={onClose}
-                className="w-10 h-10 rounded-full flex items-center justify-center text-zinc-400 hover:text-white bg-white/[0.06] hover:bg-white/10 transition-colors cursor-pointer"
+                className="w-8 h-8 rounded-md flex items-center justify-center text-zinc-400 hover:text-white bg-[#171717] border border-[#2A2A2A] transition-colors cursor-pointer"
                 aria-label="Close menu"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
-            {/* Middle: Clean Fluid Pill Menu Links */}
-            <div className="flex-1 overflow-y-auto overscroll-contain px-4 py-2 space-y-2 custom-scrollbar">
+            {/* Middle: Clean Menu Links */}
+            <div className="flex-1 overflow-y-auto overscroll-contain px-3 py-3 space-y-1.5 custom-scrollbar">
               {navItems.map((item) => {
                 const Icon = item.icon;
                 return (
                   <button
                     key={item.id}
                     onClick={item.onClick}
-                    className={`flex items-center justify-between w-full px-5 py-3 rounded-full text-sm font-semibold transition-all duration-200 cursor-pointer ${
+                    className={`flex items-center justify-between w-full px-4 py-2.5 rounded-md text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer ${
                       item.isActive
-                        ? "bg-white text-black font-bold shadow-lg shadow-white/15 scale-[1.02]"
-                        : "text-zinc-300 hover:text-white hover:bg-white/[0.08]"
+                        ? "bg-white text-black font-bold shadow-md"
+                        : "text-zinc-300 hover:text-white hover:bg-white/[0.06]"
                     }`}
                   >
-                    <div className="flex items-center gap-3.5">
+                    <div className="flex items-center gap-3">
                       <Icon
                         className={`w-4 h-4 ${
                           item.isActive ? "text-black" : "text-zinc-400"
@@ -243,7 +243,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
 
                     {item.badge ? (
                       <span
-                        className={`text-[11px] font-mono font-bold px-2.5 py-0.5 rounded-full ${
+                        className={`text-[11px] font-mono font-bold px-2 py-0.5 rounded-sm ${
                           item.isActive
                             ? "bg-black/15 text-black"
                             : "bg-emerald-500/15 text-emerald-400 border border-emerald-500/25"
@@ -253,7 +253,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
                       </span>
                     ) : (
                       <ChevronRight
-                        className={`w-4 h-4 opacity-40 ${
+                        className={`w-3.5 h-3.5 opacity-40 ${
                           item.isActive ? "text-black" : "text-white"
                         }`}
                       />
@@ -270,23 +270,23 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
                     window.scrollTo({ top: 0, behavior: "smooth" });
                     onClose();
                   }}
-                  className={`flex items-center justify-between w-full px-5 py-3 rounded-full text-sm font-bold transition-all duration-200 cursor-pointer mt-2 ${
+                  className={`flex items-center justify-between w-full px-4 py-2.5 rounded-md text-xs sm:text-sm font-bold transition-all duration-200 cursor-pointer mt-2 ${
                     activeView === "admin"
-                      ? "bg-amber-400 text-black shadow-lg shadow-amber-400/20"
+                      ? "bg-amber-400 text-black shadow-md shadow-amber-400/20"
                       : "text-amber-400 hover:bg-amber-400/10"
                   }`}
                 >
-                  <div className="flex items-center gap-3.5">
+                  <div className="flex items-center gap-3">
                     <ShieldCheck className="w-4 h-4" />
                     <span>จัดการระบบ</span>
                   </div>
-                  <ChevronRight className="w-4 h-4 opacity-60" />
+                  <ChevronRight className="w-3.5 h-3.5 opacity-60" />
                 </button>
               )}
             </div>
 
-            {/* Bottom: Minimalist Pill User Profile or Login */}
-            <div className="p-4 pt-3 shrink-0">
+            {/* Bottom: User Profile or Login */}
+            <div className="p-3 pt-2 shrink-0 border-t border-[#2A2A2A]">
               {user ? (
                 <div className="space-y-2">
                   <div
@@ -295,13 +295,13 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
                       window.scrollTo({ top: 0, behavior: "smooth" });
                       onClose();
                     }}
-                    className="flex items-center justify-between p-3 px-4 rounded-full bg-white/[0.05] hover:bg-white/[0.09] transition-colors cursor-pointer"
+                    className="flex items-center justify-between p-2.5 px-3 rounded-md bg-[#171717] hover:bg-[#202020] border border-[#2A2A2A] transition-colors cursor-pointer"
                   >
-                    <div className="flex items-center gap-3 min-w-0">
+                    <div className="flex items-center gap-2.5 min-w-0">
                       <img
                         src={avatarUrl}
                         alt={username}
-                        className="w-9 h-9 rounded-full object-cover border border-white/20 shrink-0"
+                        className="w-8 h-8 rounded-full object-cover border border-white/20 shrink-0"
                         referrerPolicy="no-referrer"
                       />
                       <div className="flex flex-col min-w-0">
@@ -321,7 +321,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
                       onLogout();
                       onClose();
                     }}
-                    className="w-full flex items-center justify-center gap-2 py-2.5 rounded-full text-xs font-semibold text-rose-400 hover:text-rose-300 bg-rose-500/10 hover:bg-rose-500/20 transition-colors cursor-pointer"
+                    className="w-full flex items-center justify-center gap-2 py-2 rounded-md text-xs font-semibold text-rose-400 hover:text-rose-300 bg-rose-500/10 hover:bg-rose-500/20 transition-colors cursor-pointer"
                   >
                     <LogOut className="w-3.5 h-3.5" />
                     <span>ออกจากระบบ</span>
@@ -335,7 +335,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
                       window.scrollTo({ top: 0, behavior: "smooth" });
                       onClose();
                     }}
-                    className="flex-1 py-3 rounded-full text-xs font-bold text-zinc-300 hover:text-white bg-white/[0.06] hover:bg-white/10 transition-colors cursor-pointer text-center"
+                    className="flex-1 py-2.5 rounded-md text-xs font-bold text-zinc-300 hover:text-white bg-[#171717] hover:bg-[#202020] border border-[#2A2A2A] transition-colors cursor-pointer text-center"
                   >
                     เข้าสู่ระบบ
                   </button>
@@ -345,7 +345,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
                       window.scrollTo({ top: 0, behavior: "smooth" });
                       onClose();
                     }}
-                    className="flex-1 py-3 rounded-full text-xs font-bold bg-white text-black hover:bg-zinc-200 transition-colors cursor-pointer text-center shadow-lg shadow-white/10"
+                    className="flex-1 py-2.5 rounded-md text-xs font-bold bg-blue-600 text-white hover:bg-blue-500 transition-colors cursor-pointer text-center shadow-md shadow-blue-600/20"
                   >
                     สมัครสมาชิก
                   </button>

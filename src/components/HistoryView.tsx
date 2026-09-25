@@ -139,13 +139,13 @@ export const HistoryView: React.FC<HistoryViewProps> = ({
                   whileHover={{ y: -4 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => setCurrentCategory(category.id)}
-                  className="bg-[#141414] border border-[#2A2A2A] hover:border-[#383838] p-5 sm:p-6 rounded-[26px] cursor-pointer group relative overflow-hidden transition-all"
+                  className="bg-[#141414] border border-[#2A2A2A] hover:border-[#383838] p-5 sm:p-6 rounded-lg cursor-pointer group relative overflow-hidden transition-all"
                 >
                   <div className="flex items-start justify-between mb-4">
-                    <div className="w-12 h-12 rounded-[18px] bg-white text-zinc-950 flex items-center justify-center shrink-0">
-                      <Icon className="w-6 h-6 text-zinc-950" strokeWidth={2.2} />
+                    <div className="w-10 h-10 rounded-md bg-white text-zinc-950 flex items-center justify-center shrink-0">
+                      <Icon className="w-5 h-5 text-zinc-950" strokeWidth={2.2} />
                     </div>
-                    <div className="w-8 h-8 rounded-full bg-[#171717] border border-[#2A2A2A] flex items-center justify-center text-zinc-400 group-hover:text-white transition-colors">
+                    <div className="w-7 h-7 rounded-md bg-[#171717] border border-[#2A2A2A] flex items-center justify-center text-zinc-400 group-hover:text-white transition-colors">
                       <ChevronRight className="w-4 h-4" />
                     </div>
                   </div>
@@ -169,24 +169,24 @@ export const HistoryView: React.FC<HistoryViewProps> = ({
             <div className="flex items-center justify-between">
               <button 
                 onClick={() => setCurrentCategory(null)}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#171717] hover:bg-[#202020] border border-[#2A2A2A] text-zinc-300 hover:text-white transition-all font-bold text-xs cursor-pointer active:scale-95"
+                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-[#171717] hover:bg-[#202020] border border-[#2A2A2A] text-zinc-300 hover:text-white transition-all font-bold text-xs cursor-pointer active:scale-95"
               >
                 <ChevronLeft className="w-4 h-4 text-blue-400" />
                 <span>ย้อนกลับไปหมวดหมู่ทั้งหมด</span>
               </button>
 
-              <div className="flex items-center gap-2 px-3 py-1 bg-[#171717] border border-[#2A2A2A] rounded-full text-xs text-zinc-400">
+              <div className="flex items-center gap-2 px-3 py-1 bg-[#171717] border border-[#2A2A2A] rounded-lg text-xs text-zinc-400">
                 <span>ทั้งหมด: <strong className="text-white font-mono">{data.length}</strong> รายการ</span>
               </div>
             </div>
 
             {/* List Table / Card */}
-            <div className="bg-[#141414] border border-[#2A2A2A] rounded-[26px] overflow-hidden p-4 sm:p-6">
+            <div className="bg-[#141414] border border-[#2A2A2A] rounded-lg overflow-hidden p-4 sm:p-6">
               {isLoading ? (
                 <div className="space-y-3 py-4">
-                  <div className="h-16 bg-[#171717] rounded-[20px] animate-pulse" />
-                  <div className="h-16 bg-[#171717] rounded-[20px] animate-pulse" />
-                  <div className="h-16 bg-[#171717] rounded-[20px] animate-pulse" />
+                  <div className="h-16 bg-[#171717] rounded-lg animate-pulse" />
+                  <div className="h-16 bg-[#171717] rounded-lg animate-pulse" />
+                  <div className="h-16 bg-[#171717] rounded-lg animate-pulse" />
                 </div>
               ) : data.length === 0 ? (
                 <div className="text-center py-16">
@@ -203,11 +203,11 @@ export const HistoryView: React.FC<HistoryViewProps> = ({
                     return (
                       <div 
                         key={item.id || i}
-                        className="py-3.5 px-3.5 sm:px-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#171717] border border-[#2A2A2A] hover:border-[#383838] rounded-[20px] transition-colors"
+                        className="py-3.5 px-3.5 sm:px-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#171717] border border-[#2A2A2A] hover:border-[#383838] rounded-lg transition-colors"
                       >
                         <div className="flex items-center gap-3.5">
-                          <div className="w-12 h-12 rounded-[18px] bg-white text-zinc-950 flex items-center justify-center shrink-0">
-                            {currentCategoryData ? <currentCategoryData.icon className="w-6 h-6 text-zinc-950" strokeWidth={2.2} /> : <History className="w-6 h-6 text-zinc-950" strokeWidth={2.2} />}
+                          <div className="w-11 h-11 rounded-lg bg-white text-zinc-950 flex items-center justify-center shrink-0">
+                            {currentCategoryData ? <currentCategoryData.icon className="w-5 h-5 text-zinc-950" strokeWidth={2.2} /> : <History className="w-5 h-5 text-zinc-950" strokeWidth={2.2} />}
                           </div>
                           <div>
                             <div className="flex items-center gap-2">
@@ -236,7 +236,7 @@ export const HistoryView: React.FC<HistoryViewProps> = ({
 
                           <button 
                             onClick={() => setSelectedItem(item)}
-                            className="p-2 bg-white/[0.04] hover:bg-white/[0.08] text-zinc-400 hover:text-white border border-white/[0.08] rounded-xl transition-all active:scale-95 cursor-pointer"
+                            className="p-2 bg-white/[0.04] hover:bg-white/[0.08] text-zinc-400 hover:text-white border border-white/[0.08] rounded-lg transition-all active:scale-95 cursor-pointer"
                             title="ดูใบเสร็จ"
                           >
                             <Receipt className="w-4 h-4" />
